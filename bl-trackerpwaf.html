@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✨ BL Reading List</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#0d0b14;color:#e2d9f3;font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh}
+  input,select,textarea,button{font-family:inherit}
+  ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#13111c}::-webkit-scrollbar-thumb{background:#2d2a3e;border-radius:3px}
+
+  /* HEADER */
+  #header{background:linear-gradient(135deg,#1a0a2e,#0d0b14);border-bottom:1px solid #2d2a3e;padding:16px 20px;position:sticky;top:0;z-index:50;backdrop-filter:blur(10px)}
+  #header h1{font-size:22px;font-weight:800;background:linear-gradient(90deg,#a78bfa,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:2px}
+  #subtitle{font-size:12px;color:#666;margin-bottom:12px}
+  .header-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+  .btn-group{display:flex;gap:8px;flex-wrap:wrap}
+  .filters{display:flex;gap:8px;flex-wrap:wrap}
+  .filters input,.filters select{background:#1e1e2e;color:#fff;border:1.5px solid #333;border-radius:8px;padding:6px 10px;font-size:13px;flex:1 1 120px}
+
+  /* BUTTONS */
+  .btn{border:none;border-radius:10px;padding:9px 14px;font-size:13px;cursor:pointer;font-weight:600}
+  .btn-purple{background:linear-gradient(135deg,#7C3AED,#a855f7);color:#fff;font-size:14px;padding:9px 16px}
+  .btn-ghost{background:#1e1e2e;color:#888;border:1.5px solid #333}
+  .btn-green{background:#1e1e2e;color:#4CAF7D;border:1.5px solid #2a3a2a}
+  .btn-blue{background:#1e1e2e;color:#4A9EFF;border:1.5px solid #1e3a5f}
+  .btn-stats{background:#1e1e2e;color:#888;border:1.5px solid #333}
+  .btn-stats.active{background:#2d1b4e;color:#a78bfa;border-color:#7C3AED}
+
+  /* GRID */
+  #grid{max-width:1000px;margin:0 auto;padding:20px 16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+  #content{max-width:1000px;margin:0 auto;padding:20px 16px}
+
+  /* CARD */
+  .card{background:linear-gradient(145deg,#1a1625,#13111c);border:1px solid #2d2a3e;border-radius:14px;overflow:hidden;transition:transform .15s,box-shadow .15s;box-shadow:0 2px 12px rgba(0,0,0,.4)}
+  .card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(124,58,237,.25)}
+  .card-top{display:flex;gap:12px;padding:14px}
+  .card-cover{width:72px;height:100px;border-radius:8px;flex-shrink:0;overflow:hidden;background:#2d2a3e;display:flex;align-items:center;justify-content:center;font-size:28px}
+  .card-cover img{width:100%;height:100%;object-fit:cover}
+  .card-body{flex:1;min-width:0}
+  .card-title{font-weight:700;font-size:16px;color:#e2d9f3;line-height:1.3}
+  .card-author{font-size:12px;color:#888;margin-top:2px}
+  .card-badges{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+  .badge{border-radius:6px;padding:3px 10px;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:3px;white-space:nowrap;color:#fff}
+  .badge-sm{padding:2px 7px;font-size:11px}
+  .card-stars{margin-top:6px;color:#FFD700;font-size:15px}
+  .card-emojis{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;font-size:15px}
+  .card-actions{display:flex;border-top:1px solid #2d2a3e}
+  .card-actions button{background:none;border:none;cursor:pointer;padding:8px}
+  .card-actions .btn-expand{flex:1;color:#888;font-size:12px}
+  .card-actions .btn-edit{color:#a78bfa;font-size:13px;padding:8px 14px}
+  .card-actions .btn-del{color:#ef4444;font-size:13px;padding:8px 14px}
+  .card-detail{padding:12px 14px 14px;border-top:1px solid #2d2a3e}
+  .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;color:#bbb;margin-bottom:8px}
+  .detail-section{margin-top:10px}
+  .detail-label{font-size:10px;color:#a78bfa;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+  .detail-text{font-size:12px;color:#ccc;white-space:pre-wrap}
+  .badges-row{display:flex;flex-wrap:wrap;gap:4px}
+
+  /* BATTERY */
+  .battery-wrap{margin-bottom:4px}
+  .battery-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;font-size:12px;color:#bbb}
+  .battery-pct{font-size:11px;color:#888}
+  .battery-row{display:flex;align-items:center;gap:4px}
+  .battery-body{flex:1;height:14px;background:#1e1e2e;border-radius:4px;overflow:hidden;position:relative}
+  .battery-fill{height:100%;border-radius:3px;transition:width .5s ease}
+  .battery-seg{position:absolute;top:0;width:1px;height:100%;background:rgba(13,11,20,.5)}
+  .battery-tip{width:4px;height:8px;border-radius:0 2px 2px 0;flex-shrink:0}
+
+  /* STATS PANEL */
+  #stats-panel{background:#13111c;border:1px solid #2d2a3e;border-radius:14px;padding:20px;margin-bottom:20px}
+  #stats-panel h3{font-size:14px;font-weight:700;color:#a78bfa;margin-bottom:14px;letter-spacing:.5px}
+  .stat-boxes{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;margin-bottom:16px}
+  .stat-box{background:#1a1625;border:1px solid #2d2a3e;border-radius:10px;padding:12px 14px;text-align:center}
+  .stat-val{font-size:22px;font-weight:800}
+  .stat-lbl{font-size:11px;color:#888;margin-top:2px}
+  .section-title{font-size:11px;color:#666;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+  .statut-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+  .statut-pill{display:flex;align-items:center;gap:6px;background:#1e1e2e;border-radius:8px;padding:5px 10px}
+  .statut-dot{width:8px;height:8px;border-radius:50%}
+  .mini-bar-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+  .mini-bar{height:6px;background:#1e1e2e;border-radius:3px;overflow:hidden;width:60px}
+  .mini-bar-fill{height:100%;border-radius:3px}
+  .genre-chip{background:#1e1e2e;border-radius:8px;padding:4px 10px;font-size:12px;color:#bbb;display:inline-flex;align-items:center;gap:5px;margin:2px}
+
+  /* MODAL */
+  #modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:100;overflow-y:auto;padding:20px 0}
+  #modal-bg.open{display:block}
+  #modal{background:#13111c;border:1px solid #2d2a3e;border-radius:16px;max-width:600px;margin:0 auto;padding:24px}
+  .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+  .modal-header h2{color:#e2d9f3;font-size:20px}
+  .modal-close{background:none;border:none;color:#888;font-size:22px;cursor:pointer}
+  .field{margin-bottom:14px}
+  .field-label{font-size:11px;color:#a78bfa;font-weight:700;margin-bottom:5px;text-transform:uppercase;letter-spacing:1px}
+  .field input,.field select,.field textarea{background:#1e1e2e;color:#fff;border:1.5px solid #333;border-radius:8px;padding:6px 10px;font-size:13px;width:100%}
+  .field textarea{resize:vertical;font-family:inherit}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .pill-group{display:flex;gap:8px;flex-wrap:wrap}
+  .pill{background:#1e1e2e;color:#fff;border:1.5px solid #333;border-radius:20px;padding:5px 14px;font-size:13px;cursor:pointer}
+  .pill.active{border-color:var(--c)}
+  .tog{background:#1e1e2e;color:#fff;border:1.5px solid #333;border-radius:8px;padding:4px 10px;font-size:13px;cursor:pointer;transition:all .15s}
+  .tog.active{background:#7C3AED;border-color:#a78bfa}
+  .photo-row{display:flex;gap:12px;align-items:flex-start}
+  .photo-preview{width:80px;height:110px;border-radius:8px;flex-shrink:0;overflow:hidden;background:#2d2a3e;display:flex;align-items:center;justify-content:center;border:1.5px solid #333;cursor:pointer;font-size:28px;color:#555}
+  .photo-preview img{width:100%;height:100%;object-fit:cover}
+  .modal-footer{display:flex;gap:10px;margin-top:20px}
+  .btn-save{flex:1;background:linear-gradient(135deg,#7C3AED,#a855f7);color:#fff;border:none;border-radius:10px;padding:12px;font-size:15px;font-weight:700;cursor:pointer}
+  .btn-cancel{background:#1e1e2e;color:#888;border:1.5px solid #333;border-radius:10px;padding:12px 20px;font-size:15px;cursor:pointer}
+
+  /* IMPORT MSG */
+  #import-msg{display:none;background:#1a2a1a;border:1px solid #2a4a2a;border-radius:10px;padding:10px 16px;margin-bottom:14px;font-size:13px;color:#4CAF7D}
+
+  /* EMPTY */
+  #empty{text-align:center;color:#555;padding:60px}
+  #empty .big{font-size:48px;margin-bottom:12px}
+</style>
+</head>
+<body>
+
+<div id="header">
+  <div class="header-row">
+    <div>
+      <h1>✨ BL Reading List</h1>
+      <div id="subtitle">0 séries · 0 en cours · 0 terminées · 0 PAL 📚 · 0 ❤️</div>
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-stats" id="btn-stats" onclick="toggleStats()">📊</button>
+      <button class="btn btn-green" onclick="exportCSV()" title="Exporter CSV">⬇️ CSV</button>
+      <button class="btn btn-blue" onclick="document.getElementById('import-input').click()" title="Importer CSV">⬆️ CSV</button>
+      <input type="file" id="import-input" accept=".csv,text/csv" style="display:none" onchange="importCSV(event)">
+      <button class="btn btn-purple" onclick="openForm()">+ Ajouter</button>
+    </div>
+  </div>
+  <div class="filters">
+    <input type="text" id="search" placeholder="🔍 Rechercher…" oninput="renderAll()">
+    <select id="f-statut" onchange="renderAll()">
+      <option value="">Tous statuts</option>
+      <option>En cours</option><option>Terminé</option><option>En pause</option><option>Hiatus</option>
+    </select>
+    <select id="f-type" onchange="renderAll()">
+      <option value="">Manhwa + Manga</option><option>Manhwa</option><option>Manga</option>
+    </select>
+    <select id="f-platform" onchange="renderAll()">
+      <option value="">Toutes plates-formes</option>
+      <option>Lezhin FR</option><option>Lezhin US</option><option>Webtoon FR</option>
+      <option>Tappytoon</option><option>Tapas</option><option>Ono</option><option>Autre</option>
+    </select>
+    <select id="f-pal" onchange="renderAll()">
+      <option value="">Toutes</option>
+      <option value="oui">PAL 📚</option>
+    </select>
+    <select id="f-sort" onchange="renderAll()">
+      <option value="titre">Tri : A–Z</option>
+      <option value="notes">Tri : Notes</option>
+      <option value="statut">Tri : Statut</option>
+    </select>
+  </div>
+</div>
+
+<div id="content">
+  <div id="import-msg"></div>
+  <div id="stats-panel" style="display:none"></div>
+  <div id="empty" style="display:none"><div class="big">📚</div><div id="empty-msg"></div></div>
+  <div id="grid"></div>
+</div>
+
+<!-- MODAL -->
+<div id="modal-bg">
+  <div id="modal">
+    <div class="modal-header">
+      <h2 id="modal-title">➕ Nouvelle série</h2>
+      <button class="modal-close" onclick="closeForm()">✕</button>
+    </div>
+
+    <input type="hidden" id="f-id">
+
+    <div class="field"><div class="field-label">Titre FR</div><input type="text" id="f-titre" placeholder="Titre en français"></div>
+    <div class="field"><div class="field-label">Autrice / Auteur</div><input type="text" id="f-auteur" placeholder="Nom de l'auteur·ice"></div>
+
+    <div class="field">
+      <div class="field-label">Cover / Photo</div>
+      <div class="photo-row">
+        <div class="photo-preview" id="photo-preview" onclick="document.getElementById('f-photo-file').click()">📷</div>
+        <div style="flex:1">
+          <input type="file" id="f-photo-file" accept="image/*" style="display:none" onchange="handlePhotoFile(event)">
+          <button class="btn btn-ghost" style="width:100%;margin-bottom:8px;border-radius:8px" onclick="document.getElementById('f-photo-file').click()">📁 Choisir une image locale</button>
+          <div style="font-size:11px;color:#666;margin-bottom:6px">ou coller une URL :</div>
+          <input type="text" id="f-visuel" placeholder="https://..." oninput="updatePhotoPreview()">
+          <button id="f-photo-remove" style="display:none;margin-top:6px;background:none;border:none;color:#ef4444;font-size:11px;cursor:pointer" onclick="removePhoto()">✕ Supprimer la photo</button>
+        </div>
+      </div>
+    </div>
+    <input type="hidden" id="f-photo-data">
+
+    <div class="grid2">
+      <div class="field"><div class="field-label">Type</div>
+        <select id="f-type-s"><option>Manhwa</option><option>Manga</option></select></div>
+      <div class="field"><div class="field-label">Plateforme</div>
+        <select id="f-plateforme"><option value="">Choisir…</option>
+          <option>Lezhin FR</option><option>Lezhin US</option><option>Webtoon FR</option>
+          <option>Tappytoon</option><option>Tapas</option><option>Ono</option><option>Autre</option>
+        </select></div>
+    </div>
+
+    <div class="field"><div class="field-label">Statut</div>
+      <div class="pill-group" id="f-statut-g">
+        <button class="pill" data-v="En cours" style="--c:#4A9EFF" onclick="setPill('statut',this)">En cours</button>
+        <button class="pill" data-v="Terminé" style="--c:#4CAF7D" onclick="setPill('statut',this)">Terminé</button>
+        <button class="pill" data-v="En pause" style="--c:#888" onclick="setPill('statut',this)">En pause</button>
+        <button class="pill" data-v="Hiatus" style="--c:#888" onclick="setPill('statut',this)">Hiatus</button>
+      </div></div>
+
+    <div class="field"><div class="field-label">Note</div>
+      <div class="pill-group" id="f-notes-g">
+        <button class="tog" data-v="★★★★" onclick="toggleSingle('notes',this)" style="color:#FFD700">★★★★</button>
+        <button class="tog" data-v="★★★★★" onclick="toggleSingle('notes',this)" style="color:#FFD700">★★★★★</button>
+      </div></div>
+
+    <div class="field"><div class="field-label">Fav</div>
+      <div class="pill-group" id="f-fav-g">
+        <button class="tog" data-v="🔥❤️" onclick="toggleSingle('fav',this)" style="font-size:18px">🔥❤️</button>
+        <button class="tog" data-v="❤️" onclick="toggleSingle('fav',this)" style="font-size:18px">❤️</button>
+        <button class="tog" data-v="🦊" onclick="toggleSingle('fav',this)" style="font-size:18px">🦊</button>
+        <button class="tog" data-v="👻" onclick="toggleSingle('fav',this)" style="font-size:18px">👻</button>
+        <button class="tog" data-v="🤯" onclick="toggleSingle('fav',this)" style="font-size:18px">🤯</button>
+        <button class="tog" data-v="😜" onclick="toggleSingle('fav',this)" style="font-size:18px">😜</button>
+        <button class="tog" data-v="🥹" onclick="toggleSingle('fav',this)" style="font-size:18px">🥹</button>
+        <button class="tog" data-v="😂" onclick="toggleSingle('fav',this)" style="font-size:18px">😂</button>
+        <button class="tog" data-v="🍆🍑" onclick="toggleSingle('fav',this)" style="font-size:18px">🍆🍑</button>
+        <button class="tog" data-v="🔥" onclick="toggleSingle('fav',this)" style="font-size:18px">🔥</button>
+      </div></div>
+
+    <div class="field"><div class="field-label">Genre</div>
+      <div class="pill-group" id="f-genres-g">
+        <button class="tog" data-v="romance" onclick="toggleMulti('genres',this)">❤️ Romance</button>
+        <button class="tog" data-v="smut" onclick="toggleMulti('genres',this)">🍆🍑 Smut</button>
+        <button class="tog" data-v="sportif" onclick="toggleMulti('genres',this)">🏸 Sportif</button>
+        <button class="tog" data-v="drama" onclick="toggleMulti('genres',this)">💔 Drama</button>
+        <button class="tog" data-v="thriller" onclick="toggleMulti('genres',this)">🔪 Thriller</button>
+        <button class="tog" data-v="action" onclick="toggleMulti('genres',this)">👊 Action</button>
+        <button class="tog" data-v="surnaturel" onclick="toggleMulti('genres',this)">👻 Surnaturel</button>
+        <button class="tog" data-v="fantaisie" onclick="toggleMulti('genres',this)">🧙 Fantaisie</button>
+        <button class="tog" data-v="comedy" onclick="toggleMulti('genres',this)">😂 Comédie</button>
+        <button class="tog" data-v="angst" onclick="toggleMulti('genres',this)">🥹 Angst</button>
+        <button class="tog" data-v="slice" onclick="toggleMulti('genres',this)">🌸 Slice of life</button>
+        <button class="tog" data-v="omegaverse" onclick="toggleMulti('genres',this)">Ω🧑α Omegaverse</button>
+        <button class="tog" data-v="idol" onclick="toggleMulti('genres',this)">🎤💅 Idol</button>
+        <button class="tog" data-v="historical" onclick="toggleMulti('genres',this)">⚔️ Historique</button>
+      </div></div>
+
+    <div class="field"><div class="field-label">Flag</div>
+      <div class="pill-group" id="f-flags-g">
+        <button class="tog" data-v="black_flag" onclick="toggleMulti('flags',this)">🏴 Black flag</button>
+        <button class="tog" data-v="red_flag" onclick="toggleMulti('flags',this)">🚩 Red flag</button>
+        <button class="tog" data-v="orange_flag" onclick="toggleMulti('flags',this)">🟠 Orange flag</button>
+        <button class="tog" data-v="green_flag" onclick="toggleMulti('flags',this)">💚 Green flag</button>
+        <button class="tog" data-v="trigger" onclick="toggleMulti('flags',this)">⚠️ Trigger warning</button>
+      </div></div>
+
+    <div class="grid2">
+      <div class="field"><div class="field-label">Piment 🌶</div>
+        <select id="f-piment"><option value="">—</option>
+          <option>🌶</option><option>🌶🌶</option><option>🌶🌶🌶</option><option>🌶🌶🌶🌶</option>
+        </select></div>
+      <div class="field"><div class="field-label">Censure</div>
+        <select id="f-censure"><option value="">—</option>
+          <option>Censuré 🥖</option><option>Non censuré 🍆</option>
+        </select></div>
+    </div>
+
+    <div class="field"><div class="field-label">Chapitres 🌶️ (liste libre)</div>
+      <textarea id="f-chaps-piment" placeholder="Ex : 12, 34–37, 58, 60-62…" rows="3"></textarea></div>
+    <div class="field"><div class="field-label">Chapitres 💓 (liste libre)</div>
+      <textarea id="f-chaps-coeur" placeholder="Ex : 5, 21, 44–46…" rows="3"></textarea></div>
+
+    <div class="field"><div class="field-label">Réseaux sociaux (lien)</div>
+      <input type="text" id="f-reseaux" placeholder="https://x.com/..."></div>
+    <div class="field"><div class="field-label">Nombre d'épisodes</div>
+      <input type="number" id="f-episodes" placeholder="0"></div>
+
+    <div class="grid2">
+      <div class="field"><div class="field-label">Tomes VO possédés</div><input type="number" id="f-vo" placeholder="0"></div>
+      <div class="field"><div class="field-label">Tomes VF possédés</div><input type="number" id="f-vf" placeholder="0"></div>
+    </div>
+    <div class="grid2">
+      <div class="field"><div class="field-label">Édition physique FR</div>
+        <select id="f-ed-fr"><option>Non</option><option>Oui</option></select></div>
+      <div class="field"><div class="field-label">Édition physique étrangère</div>
+        <select id="f-ed-etr"><option>Non</option><option>Oui</option></select></div>
+    </div>
+
+    <div class="field"><div class="field-label">À acheter ?</div>
+      <select id="f-acheter"><option value="">—</option>
+        <option>Oui</option><option>Oui partiellement</option>
+        <option>Si disponible en VF</option><option>Si disponible en VF partiellement</option>
+        <option>Non</option>
+      </select></div>
+
+    <div class="field">
+      <div class="field-label">À lire 📚</div>
+      <label style="display:flex;align-items:center;gap:10px;cursor:pointer;background:#1e1e2e;border:1.5px solid #333;border-radius:8px;padding:10px 14px">
+        <input type="checkbox" id="f-pal" style="width:18px;height:18px;accent-color:#7C3AED;cursor:pointer">
+        <span style="font-size:13px;color:#bbb">Dans ma PAL (Pile À Lire)</span>
+      </label>
+    </div>
+
+    <div class="field"><div class="field-label">Merchandising existant</div>
+      <div class="pill-group" id="f-merch-g">
+        <button class="tog" data-v="Coffret collector" onclick="toggleMulti('merchandising',this)">Coffret collector</button>
+        <button class="tog" data-v="Calendrier crossover" onclick="toggleMulti('merchandising',this)">Calendrier crossover</button>
+        <button class="tog" data-v="Porte clés" onclick="toggleMulti('merchandising',this)">Porte clés</button>
+        <button class="tog" data-v="Photocards" onclick="toggleMulti('merchandising',this)">Photocards</button>
+        <button class="tog" data-v="Mouse pad" onclick="toggleMulti('merchandising',this)">Mouse pad</button>
+        <button class="tog" data-v="Clear file" onclick="toggleMulti('merchandising',this)">Clear file</button>
+        <button class="tog" data-v="Stands acryliques" onclick="toggleMulti('merchandising',this)">Stands acryliques</button>
+        <button class="tog" data-v="Autre" onclick="toggleMulti('merchandising',this)">Autre</button>
+      </div></div>
+
+    <div class="field"><div class="field-label">Goodies possédés</div>
+      <div class="pill-group" id="f-goodies-g">
+        <button class="tog" data-v="Coffret collector" onclick="toggleMulti('goodies',this)">Coffret collector</button>
+        <button class="tog" data-v="Porte clés" onclick="toggleMulti('goodies',this)">Porte clés</button>
+        <button class="tog" data-v="Mouse pads" onclick="toggleMulti('goodies',this)">Mouse pads</button>
+        <button class="tog" data-v="Illustrations" onclick="toggleMulti('goodies',this)">Illustrations</button>
+        <button class="tog" data-v="Clear file" onclick="toggleMulti('goodies',this)">Clear file</button>
+        <button class="tog" data-v="Photocards" onclick="toggleMulti('goodies',this)">Photocards</button>
+        <button class="tog" data-v="Peluche" onclick="toggleMulti('goodies',this)">Peluche</button>
+        <button class="tog" data-v="Stand acrylique" onclick="toggleMulti('goodies',this)">Stand acrylique</button>
+        <button class="tog" data-v="Calendrier crossover" onclick="toggleMulti('goodies',this)">Calendrier crossover</button>
+        <button class="tog" data-v="Autre" onclick="toggleMulti('goodies',this)">Autre</button>
+      </div></div>
+
+    <div class="modal-footer">
+      <button class="btn-save" onclick="saveEntry()">💾 Enregistrer</button>
+      <button class="btn-cancel" onclick="closeForm()">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────
+const STATUT_COLOR = {"En cours":"#4A9EFF","Terminé":"#4CAF7D","En pause":"#888","Hiatus":"#888"};
+const GENRE_MAP = {
+  romance:"❤️",smut:"🍆🍑",sportif:"🏸",drama:"💔",thriller:"🔪",action:"👊",
+  surnaturel:"👻",fantaisie:"🧙",comedy:"😂",angst:"🥹",slice:"🌸",
+  omegaverse:"Ω🧑α",idol:"🎤💅",historical:"⚔️"
+};
+const GENRE_LABEL = {
+  romance:"Romance",smut:"Smut",sportif:"Sportif",drama:"Drama",thriller:"Thriller",
+  action:"Action",surnaturel:"Surnaturel",fantaisie:"Fantaisie",comedy:"Comédie",
+  angst:"Angst",slice:"Slice of life",omegaverse:"Omegaverse",idol:"Idol",historical:"Historique"
+};
+const FLAG_MAP = {black_flag:"🏴",red_flag:"🚩",orange_flag:"🟠",green_flag:"💚",trigger:"⚠️"};
+const FLAG_LABEL = {black_flag:"Black flag",red_flag:"Red flag",orange_flag:"Orange flag",green_flag:"Green flag",trigger:"Trigger warning"};
+
+let entries = [];
+let editingId = null;
+let formState = {statut:"En cours",notes:"",fav:"",genres:[],flags:[],merchandising:[],goodies:[]};
+let expandedCards = new Set();
+let showStats = false;
+
+// ── STORAGE ────────────────────────────────────────────────────────────────
+function saveToStorage() {
+  try { localStorage.setItem("bl-entries", JSON.stringify(entries)); } catch(e) {}
+}
+function loadFromStorage() {
+  try {
+    const d = localStorage.getItem("bl-entries");
+    if (d) entries = JSON.parse(d);
+  } catch(e) { entries = []; }
+}
+
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
+
+// ── CHAPTER COUNT ─────────────────────────────────────────────────────────
+function countChapters(text) {
+  if (!text || !text.trim()) return 0;
+  let count = 0;
+  const parts = text.split(/[,;]+/);
+  for (const part of parts) {
+    const clean = part.replace(/ch\.?\s*/gi,"").trim();
+    const range = clean.match(/(\d+)\s*[-–]\s*(\d+)/);
+    if (range) {
+      const a = parseInt(range[1]), b = parseInt(range[2]);
+      if (!isNaN(a) && !isNaN(b) && b >= a) count += b - a + 1;
+    } else if (clean.match(/\d+/)) { count++; }
+  }
+  return count;
+}
+
+// ── BATTERY HTML ──────────────────────────────────────────────────────────
+function batteryHTML(pct, color, emoji, label) {
+  const c = Math.min(100, Math.max(0, pct));
+  return `<div class="battery-wrap">
+    <div class="battery-header"><span>${emoji} ${label}</span><span class="battery-pct">${Math.round(c)}%</span></div>
+    <div class="battery-row">
+      <div class="battery-body" style="border:1.5px solid ${color}55">
+        <div class="battery-fill" style="width:${c}%;background:linear-gradient(90deg,${color}88,${color});box-shadow:0 0 6px ${color}66"></div>
+        <div class="battery-seg" style="left:25%"></div>
+        <div class="battery-seg" style="left:50%"></div>
+        <div class="battery-seg" style="left:75%"></div>
+      </div>
+      <div class="battery-tip" style="background:${color}99"></div>
+    </div>
+  </div>`;
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────
+function getFiltered() {
+  const search = document.getElementById("search").value.toLowerCase();
+  const fStatut = document.getElementById("f-statut").value;
+  const fType = document.getElementById("f-type").value;
+  const fPlatform = document.getElementById("f-platform").value;
+  const fPal = document.getElementById("f-pal").value;
+  const sort = document.getElementById("f-sort").value;
+
+  let res = entries.filter(e => {
+    if (search && !e.titre.toLowerCase().includes(search) && !(e.auteur||"").toLowerCase().includes(search)) return false;
+    if (fStatut && e.statut !== fStatut) return false;
+    if (fType && e.type !== fType) return false;
+    if (fPlatform && e.plateforme !== fPlatform) return false;
+    if (fPal === "oui" && !e.pal) return false;
+    return true;
+  });
+  res.sort((a,b) => {
+    if (sort==="notes") return (b.notes?.length||0)-(a.notes?.length||0);
+    if (sort==="statut") return (a.statut||"").localeCompare(b.statut||"");
+    return (a.titre||"").localeCompare(b.titre||"");
+  });
+  return res;
+}
+
+function cardHTML(e) {
+  const imgSrc = e.photoData || e.visuel || "";
+  const coverHTML = imgSrc
+    ? `<div class="card-cover"><img src="${imgSrc}" onerror="this.parentElement.innerHTML='📖'"></div>`
+    : `<div class="card-cover">📖</div>`;
+
+  const badges = `<div class="card-badges">
+    ${e.pal?`<span class="badge" style="background:#1a3a1a;border:1px solid #2a5a2a">📚 PAL</span>`:""}
+    <span class="badge" style="background:${STATUT_COLOR[e.statut]||"#555"}">${e.statut||""}</span>
+    ${e.type?`<span class="badge" style="background:#334155">${e.type}</span>`:""}
+    ${e.plateforme?`<span class="badge" style="background:#1e3a5f">${e.plateforme}</span>`:""}
+    ${e.piment?`<span style="font-size:13px">${e.piment}</span>`:""}
+  </div>`;
+
+  const emojis = [...(e.genres||[]).map(g=>GENRE_MAP[g]||""), ...(e.flags||[]).map(f=>FLAG_MAP[f]||"")].filter(Boolean);
+
+  const ep = parseInt(e.nbEpisodes)||0;
+  const pc = countChapters(e.chapsPiment);
+  const cc = countChapters(e.chapsCoeur);
+  const battHTML = (ep>0 && (pc>0||cc>0)) ? `<div style="margin-top:8px">
+    ${pc>0?batteryHTML(Math.min(100,pc/ep*100),"#ef4444","🌶️",`${pc}/${ep}`):""}
+    ${cc>0?`<div style="margin-top:4px">${batteryHTML(Math.min(100,cc/ep*100),"#f472b6","💓",`${cc}/${ep}`)}</div>`:""}
+  </div>` : "";
+
+  const exp = expandedCards.has(e.id);
+  const detailHTML = exp ? buildDetail(e) : "";
+
+  return `<div class="card" id="card-${e.id}">
+    <div class="card-top">
+      ${coverHTML}
+      <div class="card-body">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+          <div>
+            <div class="card-title">${esc(e.titre||"Sans titre")}</div>
+            ${e.auteur?`<div class="card-author">${esc(e.auteur)}</div>`:""}
+          </div>
+          ${e.fav?`<span style="font-size:20px">${e.fav}</span>`:""}
+        </div>
+        ${badges}
+        ${e.notes?`<div class="card-stars">${e.notes}</div>`:""}
+        ${emojis.length?`<div class="card-emojis">${emojis.map(em=>`<span>${em}</span>`).join("")}</div>`:""}
+        ${battHTML}
+      </div>
+    </div>
+    ${detailHTML}
+    <div class="card-actions">
+      <button class="card-actions btn-expand" onclick="toggleExpand('${e.id}')">${exp?"▲ Réduire":"▼ Détails"}</button>
+      <button class="card-actions btn-edit" onclick="openForm('${e.id}')">✏️</button>
+      <button class="card-actions btn-del" onclick="deleteEntry('${e.id}')">🗑️</button>
+    </div>
+  </div>`;
+}
+
+function buildDetail(e) {
+  const items = [];
+  if (e.nbEpisodes) items.push(`📋 ${e.nbEpisodes} épisodes`);
+  if (e.nbTomesVO) items.push(`📦 VO : ${e.nbTomesVO} tomes`);
+  if (e.nbTomesVF) items.push(`🇫🇷 VF : ${e.nbTomesVF} tomes`);
+  if (e.edPhysFR==="Oui") items.push("📗 Éd. FR");
+  if (e.edPhysEtr==="Oui") items.push("📘 Éd. étrangère");
+  if (e.aAcheter) items.push(`🛒 ${e.aAcheter}`);
+  if (e.censure) items.push(e.censure);
+
+  return `<div class="card-detail">
+    ${items.length?`<div class="detail-grid">${items.map(i=>`<div>${i}</div>`).join("")}</div>`:""}
+    ${e.chapsPiment?`<div class="detail-section"><div class="detail-label">Chapitres 🌶️</div><div class="detail-text">${esc(e.chapsPiment)}</div></div>`:""}
+    ${e.chapsCoeur?`<div class="detail-section"><div class="detail-label">Chapitres 💓</div><div class="detail-text">${esc(e.chapsCoeur)}</div></div>`:""}
+    ${e.merchandising?.length?`<div class="detail-section"><div class="detail-label">Merch existant</div><div class="badges-row">${e.merchandising.map(m=>`<span class="badge badge-sm" style="background:#2d1b4e">${m}</span>`).join("")}</div></div>`:""}
+    ${e.goodies?.length?`<div class="detail-section"><div class="detail-label">Goodies possédés</div><div class="badges-row">${e.goodies.map(g=>`<span class="badge badge-sm" style="background:#1a3a2e">${g}</span>`).join("")}</div></div>`:""}
+    ${e.reseaux?`<div class="detail-section"><a href="${e.reseaux}" target="_blank" style="color:#a78bfa;font-size:12px">🔗 Réseaux sociaux</a></div>`:""}
+  </div>`;
+}
+
+function renderAll() {
+  const filtered = getFiltered();
+  const grid = document.getElementById("grid");
+  const empty = document.getElementById("empty");
+
+  // subtitle
+  const enCours = entries.filter(e=>e.statut==="En cours").length;
+  const term = entries.filter(e=>e.statut==="Terminé").length;
+  const pal = entries.filter(e=>e.pal).length;
+  const favs = entries.filter(e=>e.fav).length;
+  document.getElementById("subtitle").textContent = `${entries.length} séries · ${enCours} en cours · ${term} terminées · ${pal} PAL 📚 · ${favs} ❤️`;
+
+  if (filtered.length===0) {
+    grid.innerHTML="";
+    empty.style.display="block";
+    document.getElementById("empty-msg").textContent = entries.length===0 ? "Aucune série pour l'instant. Ajoutes-en une !" : "Aucun résultat.";
+  } else {
+    empty.style.display="none";
+    grid.innerHTML = filtered.map(cardHTML).join("");
+  }
+
+  if (showStats) renderStats();
+}
+
+function toggleExpand(id) {
+  if (expandedCards.has(id)) expandedCards.delete(id);
+  else expandedCards.add(id);
+  renderAll();
+}
+
+function deleteEntry(id) {
+  const e = entries.find(x=>x.id===id);
+  if (!e) return;
+  if (!confirm(`Supprimer "${e.titre}" ?`)) return;
+  entries = entries.filter(x=>x.id!==id);
+  saveToStorage();
+  renderAll();
+}
+
+// ── STATS ─────────────────────────────────────────────────────────────────
+function toggleStats() {
+  showStats = !showStats;
+  document.getElementById("btn-stats").classList.toggle("active", showStats);
+  document.getElementById("stats-panel").style.display = showStats ? "block" : "none";
+  if (showStats) renderStats();
+}
+
+function renderStats() {
+  const total = entries.length;
+  const panel = document.getElementById("stats-panel");
+  if (total===0) { panel.innerHTML="<h3>📊 Statistiques</h3><p style='color:#555;font-size:13px'>Aucune série à analyser.</p>"; return; }
+
+  const notes5 = entries.filter(e=>e.notes==="★★★★★").length;
+  const notes4 = entries.filter(e=>e.notes==="★★★★").length;
+  const withMerch = entries.filter(e=>e.merchandising?.length>0).length;
+  const withGoodies = entries.filter(e=>e.goodies?.length>0).length;
+  const withPiment = entries.filter(e=>e.piment).length;
+  const palCount = entries.filter(e=>e.pal).length;
+
+  const byStatut = ["En cours","Terminé","En pause","Hiatus"].map(s=>({label:s,count:entries.filter(e=>e.statut===s).length,color:STATUT_COLOR[s]}));
+  const byType = ["Manhwa","Manga"].map(t=>({label:t,count:entries.filter(e=>e.type===t).length}));
+  const byPlat = ["Lezhin FR","Lezhin US","Webtoon FR","Tappytoon","Tapas","Ono","Autre"]
+    .map(p=>({label:p,count:entries.filter(e=>e.plateforme===p).length}))
+    .filter(p=>p.count>0).sort((a,b)=>b.count-a.count).slice(0,5);
+
+  const genreCount = {};
+  entries.forEach(e => (e.genres||[]).forEach(g => { genreCount[g]=(genreCount[g]||0)+1; }));
+  const topGenres = Object.entries(genreCount).sort((a,b)=>b[1]-a[1]).slice(0,6);
+
+  const entriesWithEp = entries.filter(e=>parseInt(e.nbEpisodes)>0);
+  let totalEp=0,totalP=0,totalC=0;
+  entriesWithEp.forEach(e=>{
+    const ep=parseInt(e.nbEpisodes)||0; totalEp+=ep;
+    totalP+=Math.min(countChapters(e.chapsPiment),ep);
+    totalC+=Math.min(countChapters(e.chapsCoeur),ep);
+  });
+
+  panel.innerHTML = `<h3>📊 Statistiques</h3>
+  <div class="stat-boxes">
+    <div class="stat-box"><div class="stat-val" style="color:#a78bfa">${total}</div><div class="stat-lbl">Total séries</div></div>
+    <div class="stat-box"><div class="stat-val" style="color:#4CAF7D">${palCount}</div><div class="stat-lbl">PAL 📚</div></div>
+    <div class="stat-box"><div class="stat-val" style="color:#FFD700">${notes5}</div><div class="stat-lbl">★★★★★</div></div>
+    <div class="stat-box"><div class="stat-val" style="color:#FFD700">${notes4}</div><div class="stat-lbl">★★★★</div></div>
+    <div class="stat-box"><div class="stat-val" style="color:#f472b6">${withMerch}</div><div class="stat-lbl">Avec merch</div></div>
+    <div class="stat-box"><div class="stat-val" style="color:#4CAF7D">${withGoodies}</div><div class="stat-lbl">Goodies possédés</div></div>
+    <div class="stat-box"><div class="stat-val" style="color:#ef4444">${withPiment}</div><div class="stat-lbl">Séries 🌶</div></div>
+  </div>
+  <div class="section-title">Par statut</div>
+  <div class="statut-row">${byStatut.filter(s=>s.count>0).map(s=>`<div class="statut-pill">
+    <div class="statut-dot" style="background:${s.color}"></div>
+    <span style="font-size:12px;color:#bbb">${s.label}</span>
+    <span style="font-size:12px;font-weight:700;color:#fff">${s.count}</span>
+    <span style="font-size:10px;color:#555">${Math.round(s.count/total*100)}%</span>
+  </div>`).join("")}</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+    <div>
+      <div class="section-title">Type</div>
+      ${byType.filter(t=>t.count>0).map(t=>`<div class="mini-bar-row">
+        <span style="font-size:12px;color:#bbb">${t.label}</span>
+        <div style="display:flex;align-items:center;gap:6px">
+          <div class="mini-bar"><div class="mini-bar-fill" style="width:${t.count/total*100}%;background:#7C3AED"></div></div>
+          <span style="font-size:11px;color:#888;width:16px;text-align:right">${t.count}</span>
+        </div>
+      </div>`).join("")}
+    </div>
+    <div>
+      <div class="section-title">Plates-formes</div>
+      ${byPlat.map(p=>`<div class="mini-bar-row">
+        <span style="font-size:11px;color:#bbb;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.label}</span>
+        <div style="display:flex;align-items:center;gap:6px">
+          <div class="mini-bar" style="width:40px"><div class="mini-bar-fill" style="width:${p.count/total*100}%;background:#4A9EFF"></div></div>
+          <span style="font-size:11px;color:#888;width:16px;text-align:right">${p.count}</span>
+        </div>
+      </div>`).join("")}
+    </div>
+  </div>
+  ${topGenres.length?`<div class="section-title">Genres les plus lus</div>
+  <div style="margin-bottom:14px">${topGenres.map(([id,count])=>`<span class="genre-chip">${GENRE_MAP[id]||""} ${GENRE_LABEL[id]||id} <strong style="color:#a78bfa">×${count}</strong></span>`).join("")}</div>`:""}
+  ${totalEp>0?`<div class="section-title">Chapitres sur ${totalEp} épisodes suivis</div>
+  ${batteryHTML(totalEp>0?totalP/totalEp*100:0,"#ef4444","🌶️",`${totalP} chapitres piment`)}
+  <div style="margin-top:8px">${batteryHTML(totalEp>0?totalC/totalEp*100:0,"#f472b6","💓",`${totalC} chapitres cœur`)}</div>`:""}`;
+}
+
+// ── FORM ──────────────────────────────────────────────────────────────────
+function openForm(id) {
+  editingId = id || null;
+  document.getElementById("modal-title").textContent = id ? "✏️ Modifier" : "➕ Nouvelle série";
+  formState = {statut:"En cours",notes:"",fav:"",genres:[],flags:[],merchandising:[],goodies:[]};
+
+  const e = id ? entries.find(x=>x.id===id) : null;
+  document.getElementById("f-id").value = id||"";
+  document.getElementById("f-titre").value = e?.titre||"";
+  document.getElementById("f-auteur").value = e?.auteur||"";
+  document.getElementById("f-visuel").value = e?.visuel||"";
+  document.getElementById("f-photo-data").value = e?.photoData||"";
+  document.getElementById("f-type-s").value = e?.type||"Manhwa";
+  document.getElementById("f-plateforme").value = e?.plateforme||"";
+  document.getElementById("f-piment").value = e?.piment||"";
+  document.getElementById("f-censure").value = e?.censure||"";
+  document.getElementById("f-chaps-piment").value = e?.chapsPiment||"";
+  document.getElementById("f-chaps-coeur").value = e?.chapsCoeur||"";
+  document.getElementById("f-reseaux").value = e?.reseaux||"";
+  document.getElementById("f-episodes").value = e?.nbEpisodes||"";
+  document.getElementById("f-vo").value = e?.nbTomesVO||"";
+  document.getElementById("f-vf").value = e?.nbTomesVF||"";
+  document.getElementById("f-ed-fr").value = e?.edPhysFR||"Non";
+  document.getElementById("f-ed-etr").value = e?.edPhysEtr||"Non";
+  document.getElementById("f-acheter").value = e?.aAcheter||"";
+  document.getElementById("f-pal").checked = e?.pal||false;
+
+  if (e) {
+    formState.statut = e.statut||"En cours";
+    formState.notes = e.notes||"";
+    formState.fav = e.fav||"";
+    formState.genres = [...(e.genres||[])];
+    formState.flags = [...(e.flags||[])];
+    formState.merchandising = [...(e.merchandising||[])];
+    formState.goodies = [...(e.goodies||[])];
+  }
+
+  syncPills("statut","f-statut-g");
+  syncToggles("notes","f-notes-g");
+  syncToggles("fav","f-fav-g");
+  syncToggles("genres","f-genres-g");
+  syncToggles("flags","f-flags-g");
+  syncToggles("merchandising","f-merch-g");
+  syncToggles("goodies","f-goodies-g");
+  updatePhotoPreview();
+
+  document.getElementById("modal-bg").classList.add("open");
+}
+
+function closeForm() {
+  document.getElementById("modal-bg").classList.remove("open");
+}
+
+function saveEntry() {
+  const titre = document.getElementById("f-titre").value.trim();
+  if (!titre) { alert("Le titre est requis."); return; }
+  const id = document.getElementById("f-id").value || uid();
+  const entry = {
+    id, titre,
+    auteur: document.getElementById("f-auteur").value,
+    visuel: document.getElementById("f-visuel").value,
+    photoData: document.getElementById("f-photo-data").value,
+    type: document.getElementById("f-type-s").value,
+    plateforme: document.getElementById("f-plateforme").value,
+    statut: formState.statut,
+    notes: formState.notes,
+    fav: formState.fav,
+    genres: formState.genres,
+    flags: formState.flags,
+    piment: document.getElementById("f-piment").value,
+    censure: document.getElementById("f-censure").value,
+    chapsPiment: document.getElementById("f-chaps-piment").value,
+    chapsCoeur: document.getElementById("f-chaps-coeur").value,
+    reseaux: document.getElementById("f-reseaux").value,
+    nbEpisodes: document.getElementById("f-episodes").value,
+    nbTomesVO: document.getElementById("f-vo").value,
+    nbTomesVF: document.getElementById("f-vf").value,
+    edPhysFR: document.getElementById("f-ed-fr").value,
+    edPhysEtr: document.getElementById("f-ed-etr").value,
+    aAcheter: document.getElementById("f-acheter").value,
+    pal: document.getElementById("f-pal").checked,
+    merchandising: formState.merchandising,
+    goodies: formState.goodies,
+  };
+  const idx = entries.findIndex(e=>e.id===id);
+  if (idx>=0) entries[idx]=entry; else entries.push(entry);
+  saveToStorage();
+  closeForm();
+  renderAll();
+}
+
+// ── TOGGLE HELPERS ────────────────────────────────────────────────────────
+function setPill(key, btn) {
+  formState[key] = btn.dataset.v;
+  const color = btn.style.getPropertyValue("--c") || "#7C3AED";
+  btn.closest(".pill-group").querySelectorAll(".pill").forEach(b=>{
+    b.classList.remove("active");
+    b.style.background="#1e1e2e"; b.style.color="#fff";
+  });
+  btn.classList.add("active");
+  btn.style.background=color; btn.style.color="#fff";
+}
+function toggleSingle(key, btn) {
+  const v = btn.dataset.v;
+  formState[key] = formState[key]===v ? "" : v;
+  btn.closest(".pill-group").querySelectorAll(".tog").forEach(b=>b.classList.remove("active"));
+  if (formState[key]) btn.classList.add("active");
+}
+function toggleMulti(key, btn) {
+  const v = btn.dataset.v;
+  const arr = formState[key];
+  const idx = arr.indexOf(v);
+  if (idx>=0) arr.splice(idx,1); else arr.push(v);
+  btn.classList.toggle("active", arr.includes(v));
+}
+function syncPills(key, groupId) {
+  document.getElementById(groupId).querySelectorAll(".pill").forEach(b=>{
+    const isActive = b.dataset.v===formState[key];
+    b.classList.toggle("active",isActive);
+    const c = b.style.getPropertyValue("--c")||"#7C3AED";
+    b.style.background = isActive?c:"#1e1e2e";
+    b.style.color="#fff";
+  });
+}
+function syncToggles(key, groupId) {
+  document.getElementById(groupId).querySelectorAll(".tog").forEach(b=>{
+    const arr = formState[key];
+    const isActive = Array.isArray(arr) ? arr.includes(b.dataset.v) : arr===b.dataset.v;
+    b.classList.toggle("active",isActive);
+  });
+}
+
+// ── PHOTO ─────────────────────────────────────────────────────────────────
+function handlePhotoFile(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    document.getElementById("f-photo-data").value = ev.target.result;
+    updatePhotoPreview();
+  };
+  r.readAsDataURL(file);
+}
+function updatePhotoPreview() {
+  const data = document.getElementById("f-photo-data").value;
+  const url = document.getElementById("f-visuel").value;
+  const src = data || url;
+  const preview = document.getElementById("photo-preview");
+  const removeBtn = document.getElementById("f-photo-remove");
+  if (src) {
+    preview.innerHTML = `<img src="${src}" onerror="this.parentElement.innerHTML='📷'">`;
+    removeBtn.style.display = data ? "block" : "none";
+  } else {
+    preview.innerHTML = "📷";
+    removeBtn.style.display="none";
+  }
+}
+function removePhoto() {
+  document.getElementById("f-photo-data").value="";
+  updatePhotoPreview();
+}
+
+// ── CSV ───────────────────────────────────────────────────────────────────
+const CSV_FIELDS = ["id","titre","auteur","visuel","type","plateforme","statut","notes","fav",
+  "genres","flags","piment","censure","reseaux","nbEpisodes","nbTomesVO","nbTomesVF",
+  "edPhysFR","edPhysEtr","aAcheter","pal","merchandising","goodies","chapsPiment","chapsCoeur"];
+
+function escapeCSV(val) {
+  if (val===null||val===undefined) return "";
+  const s = Array.isArray(val) ? val.join("|") : String(val);
+  if (s.includes('"')||s.includes(',')||s.includes('\n')) return `"${s.replace(/"/g,'""')}"`;
+  return s;
+}
+function exportCSV() {
+  const header = CSV_FIELDS.join(",");
+  const rows = entries.map(e => CSV_FIELDS.map(f=>escapeCSV(e[f])).join(","));
+  const csv = [header,...rows].join("\n");
+  const blob = new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href=url; a.download="bl-reading-list.csv"; a.click();
+  URL.revokeObjectURL(url);
+}
+function importCSV(event) {
+  const file = event.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const text = e.target.result;
+    const lines = text.split(/\r?\n/).filter(l=>l.trim());
+    if (lines.length<2) { showImportMsg("❌ Fichier invalide ou vide."); return; }
+    const headers = lines[0].split(",");
+    const parsed = [];
+    for (let i=1;i<lines.length;i++) {
+      const cols=[]; let cur="",inQ=false;
+      for (let c=0;c<lines[i].length;c++){
+        const ch=lines[i][c];
+        if(ch==='"'){inQ=!inQ;}
+        else if(ch===','&&!inQ){cols.push(cur);cur="";}
+        else{cur+=ch;}
+      }
+      cols.push(cur);
+      const obj={genres:[],flags:[],merchandising:[],goodies:[]};
+      headers.forEach((h,idx)=>{
+        const v=(cols[idx]||"").replace(/^"|"$/g,"").replace(/""/g,'"');
+        if(["genres","flags","merchandising","goodies"].includes(h)) obj[h]=v?v.split("|").filter(Boolean):[];
+        else obj[h]=v;
+      });
+      if(obj.titre) parsed.push(obj);
+    }
+    if (!parsed.length) { showImportMsg("❌ Aucune série valide trouvée."); return; }
+    if (!confirm(`Importer ${parsed.length} série(s) ? Les doublons (même titre) seront ignorés.`)) return;
+    const existing = new Set(entries.map(e=>e.titre.toLowerCase()));
+    const newOnes = parsed.filter(p=>!existing.has((p.titre||"").toLowerCase()));
+    entries = [...entries,...newOnes];
+    saveToStorage();
+    renderAll();
+    showImportMsg(`✅ ${newOnes.length} importée(s), ${parsed.length-newOnes.length} doublon(s) ignoré(s).`);
+    event.target.value="";
+  };
+  reader.readAsText(file, "utf-8");
+}
+function showImportMsg(msg) {
+  const el = document.getElementById("import-msg");
+  el.textContent=msg; el.style.display="block";
+  el.style.color = msg.startsWith("✅") ? "#4CAF7D" : "#ef4444";
+  setTimeout(()=>el.style.display="none", 4000);
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+loadFromStorage();
+renderAll();
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  const sw = `
+const CACHE='bl-tracker-v2';
+self.addEventListener('install',e=>{self.skipWaiting();});
+self.addEventListener('activate',e=>{
+  e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));
+  self.clients.claim();
+});
+self.addEventListener('fetch',e=>{
+  if(e.request.method!=='GET')return;
+  const url=new URL(e.request.url);
+  if(url.origin!==self.location.origin)return;
+  e.respondWith(
+    caches.open(CACHE).then(cache=>
+      cache.match(e.request).then(cached=>{
+        const fresh=fetch(e.request).then(resp=>{
+          if(resp&&resp.status===200)cache.put(e.request,resp.clone());
+          return resp;
+        }).catch(()=>cached);
+        return cached||fresh;
+      })
+    )
+  );
+});
+  `;
+  const blob = new Blob([sw], {type:'application/javascript'});
+  const url = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(url);
+}
+</script>
+</body>
+</html>
