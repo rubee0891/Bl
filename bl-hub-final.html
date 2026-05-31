@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0d0d18">
+<meta name="apple-mobile-web-app-title" content="BL Hub">
+<link rel="manifest" href="data:application/json,%7B%22name%22%3A%20%22BL%20Hub%22%2C%20%22short_name%22%3A%20%22BL%20Hub%22%2C%20%22start_url%22%3A%20%22./%22%2C%20%22display%22%3A%20%22standalone%22%2C%20%22background_color%22%3A%20%22%230d0d18%22%2C%20%22theme_color%22%3A%20%22%230d0d18%22%2C%20%22orientation%22%3A%20%22portrait%22%2C%20%22icons%22%3A%20%5B%7B%22src%22%3A%20%22data%3Aimage/svg%2Bxml%2C%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Crect%20width%3D%27100%27%20height%3D%27100%27%20rx%3D%2720%27%20fill%3D%27%230d0d18%27/%3E%3Ctext%20y%3D%27.9em%27%20font-size%3D%2775%27%3E%5Cud83d%5Cudc96%3C/text%3E%3C/svg%3E%22%2C%20%22sizes%22%3A%20%22512x512%22%2C%20%22type%22%3A%20%22image/svg%2Bxml%22%2C%20%22purpose%22%3A%20%22any%20maskable%22%7D%5D%7D">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BL Hub">
+<title>💖 BL Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d0d18;--bg2:#13132a;--surface:#1a1a32;--surface2:#21213e;
+  --border:#ffffff10;--border2:#ffffff1c;
+  --text:#ede8ff;--muted:#6b6898;
+  --pink:#f472b6;--purple:#c084fc;--grad:linear-gradient(135deg,#c084fc,#f472b6);
+  --green:#34d399;--gold:#fbbf24;--red:#f87171;--cyan:#22d3ee;--orange:#f97316;
+  --safe-b:env(safe-area-inset-bottom,0px);
+  --safe-t:env(safe-area-inset-top,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;overflow-x:hidden}
+
+/* HEADER */
+.header{background:linear-gradient(180deg,#0c0c1e,#0d0d1888);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:calc(14px + var(--safe-t)) 16px 0;position:sticky;top:0;z-index:100}
+.header-row{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.logo{width:38px;height:38px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.header-title{font-family:'Playfair Display',serif;font-size:20px;color:#fff;line-height:1}
+.header-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.saving-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);display:inline-block;margin-left:6px;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.tabs{display:flex;overflow-x:auto;scrollbar-width:none;gap:2px}
+.tabs::-webkit-scrollbar{display:none}
+.tab-btn{flex-shrink:0;background:none;border:none;font-family:'Outfit',sans-serif;color:var(--muted);padding:10px 13px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
+.tab-btn.active{color:var(--purple);border-bottom-color:var(--purple)}
+
+/* LAYOUT */
+.content{padding:16px 14px calc(82px + var(--safe-b));max-width:700px;margin:0 auto}
+.tab-panel{display:none;animation:fadeUp .2s ease}
+.tab-panel.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* INPUTS */
+.field{display:flex;flex-direction:column;gap:5px;width:100%}
+.field label,.field-label{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.07em;text-transform:uppercase}
+input[type=text],input[type=url],input[type=date],input[type=time],input[type=number],select,textarea{
+  background:var(--surface2);border:1px solid var(--border);color:var(--text);
+  padding:11px 13px;border-radius:11px;font-size:13px;font-family:'Outfit',sans-serif;
+  outline:none;width:100%;transition:border-color .15s
+}
+input:focus,select:focus,textarea:focus{border-color:#c084fc44}
+input::placeholder,textarea::placeholder{color:var(--muted)}
+textarea{resize:vertical;min-height:72px}
+select option{background:#21213e}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media(max-width:400px){.row2,.row3{grid-template-columns:1fr}}
+
+/* BUTTONS */
+.btn-primary{background:var(--grad);color:#fff;border:none;padding:13px;border-radius:13px;font-weight:800;font-size:14px;cursor:pointer;font-family:'Outfit',sans-serif;width:100%;transition:opacity .15s}
+.btn-primary:active{opacity:.85}
+.btn-ghost{background:var(--surface2);color:var(--text);border:1px solid var(--border2);padding:11px 16px;border-radius:11px;font-weight:700;font-size:13px;cursor:pointer;font-family:'Outfit',sans-serif}
+.btn-sm{padding:7px 13px;border-radius:9px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;border:none}
+.btn-sm.danger{background:#f8717118;color:var(--red);border:1px solid #f8717130}
+.btn-sm.edit{background:#c084fc18;color:var(--purple);border:1px solid #c084fc30}
+.btn-sm.cyan{background:#22d3ee18;color:var(--cyan);border:1px solid #22d3ee30}
+.btn-outline{background:transparent;color:var(--purple);border:1px solid #c084fc55;padding:8px 14px;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer;font-family:'Outfit',sans-serif;transition:background .15s}
+.btn-outline:active{background:#c084fc18}
+.btn-outline.cyan{color:var(--cyan);border-color:#22d3ee55}
+.btn-icon{background:var(--surface2);border:1px solid var(--border);color:#ccc;width:30px;height:30px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:background .1s}
+.btn-icon:active{background:#ffffff20}
+.btn-icon.danger{color:var(--red)}
+
+/* SECTION DIVIDER */
+.sdiv{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin:16px 0 10px;display:flex;align-items:center;gap:10px}
+.sdiv::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* SERIE TAGS */
+.serie-tags-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;min-height:8px}
+.serie-tag{display:inline-flex;align-items:center;gap:6px;background:#c084fc22;border:1px solid #c084fc44;border-radius:20px;padding:4px 10px 4px 12px;font-size:12px;font-weight:700;color:var(--purple)}
+.serie-tag button{background:none;border:none;color:#c084fc88;cursor:pointer;font-size:14px;line-height:1;padding:0;font-family:inherit}
+.serie-tag button:hover{color:var(--red)}
+.serie-tag-input-row{display:flex;gap:8px;align-items:center}
+.serie-tag-input-row input{flex:1}
+.btn-add-serie{background:var(--grad);border:none;color:#fff;width:40px;height:40px;border-radius:11px;font-size:20px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+
+/* BANNER UPLOAD */
+.banner-zone{height:110px;border:2px dashed #c084fc33;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);gap:6px;font-size:13px;transition:border-color .15s;position:relative;overflow:hidden}
+.banner-zone:active{border-color:var(--purple)}
+.banner-zone img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.banner-zone-label{position:relative;z-index:1;font-size:11px;font-weight:700;background:#000a;padding:3px 10px;border-radius:8px}
+.banner-icon{position:relative;z-index:1;font-size:26px}
+
+/* PHOTO GRID */
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
+.photo-cell{aspect-ratio:1;border-radius:10px;overflow:hidden;position:relative}
+.photo-cell img{width:100%;height:100%;object-fit:cover}
+.photo-del{position:absolute;top:4px;right:4px;background:#000a;border:none;border-radius:50%;width:22px;height:22px;color:#fff;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2}
+.photo-add{aspect-ratio:1;border-radius:10px;background:var(--surface2);border:2px dashed var(--border2);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);gap:4px}
+.photo-add span{font-size:20px}
+.photo-add small{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+
+/* PHOTO AREA (merch) */
+.photo-area{border:2px dashed #c084fc33;border-radius:12px;padding:16px;text-align:center;cursor:pointer;color:var(--muted);font-size:13px;transition:border-color .15s}
+.photo-area:active{border-color:var(--purple)}
+.photo-preview{width:72px;height:72px;border-radius:10px;object-fit:cover;margin-top:10px}
+
+/* LINKS */
+.link-row{display:flex;gap:8px;margin-bottom:6px;align-items:center}
+.link-row input{flex:1}
+.link-del{background:#f8717118;border:1px solid #f8717130;color:var(--red);border-radius:8px;padding:8px 10px;font-size:12px;cursor:pointer;flex-shrink:0;font-family:'Outfit',sans-serif}
+.btn-add-link{background:var(--surface2);border:1px dashed #c084fc33;color:var(--purple);padding:8px 14px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;width:100%;margin-top:4px}
+
+/* COLLAB CARDS */
+.collab-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;overflow:hidden;margin-bottom:14px}
+.collab-banner{height:130px;background:linear-gradient(135deg,#1c1c38,#2a1040);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.collab-banner img{width:100%;height:100%;object-fit:cover}
+.collab-banner-ph{font-size:40px;opacity:.3}
+.status-pill{position:absolute;top:10px;right:10px;padding:4px 11px;border-radius:20px;font-size:10px;font-weight:800;letter-spacing:.05em;backdrop-filter:blur(8px)}
+.collab-body{padding:14px 15px 15px}
+.collab-serie{font-size:10px;color:var(--purple);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.collab-name{font-family:'Playfair Display',serif;font-size:20px;color:#fff;line-height:1.2;margin-bottom:10px}
+.meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px}
+.meta-box{background:var(--bg2);border-radius:9px;padding:7px 10px}
+.meta-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;font-weight:700;margin-bottom:2px}
+.meta-val{font-size:12px;font-weight:600;color:var(--text);word-break:break-word}
+.meta-val.purple{color:var(--purple)}
+.meta-val.gold{color:var(--gold)}
+.meta-val.green{color:var(--green)}
+.meta-val.red{color:var(--red)}
+
+/* MD LIST */
+.md-block{background:var(--bg2);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--muted);white-space:pre-wrap;word-break:break-word;margin-bottom:10px;line-height:1.6}
+
+/* SOCIAL LINKS */
+.social-links{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.social-link{display:inline-flex;align-items:center;gap:5px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:5px 11px;font-size:11px;color:var(--text);text-decoration:none;transition:border-color .15s}
+.social-link:hover{border-color:var(--purple)}
+
+/* GALLERY */
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:10px}
+.gallery img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px}
+
+/* MERCH ADD */
+.merch-add-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:8px}
+.merch-item{background:var(--bg2);border-radius:10px;padding:9px 12px;display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.merch-thumb{width:36px;height:36px;border-radius:7px;background:var(--surface);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:16px}
+.merch-thumb img{width:100%;height:100%;object-fit:cover}
+.merch-check{width:24px;height:24px;border-radius:7px;border:2px solid var(--border2);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;transition:all .15s}
+.merch-check.done{background:var(--green);border-color:var(--green);color:#fff}
+
+/* PROGRESS */
+.prog-wrap{background:var(--bg2);border-radius:99px;height:5px;overflow:hidden;margin:6px 0 10px}
+.prog-bar{height:100%;background:var(--grad);border-radius:99px;transition:width .4s}
+
+/* COLLECTION CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:13px 14px;display:flex;gap:12px;align-items:flex-start;transition:border-color .15s;animation:fadeUp .15s ease both;margin-bottom:10px}
+.card:active{border-color:#c084fc22}
+.card-thumb-big{width:58px;height:58px;border-radius:10px;object-fit:cover;flex-shrink:0;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden}
+.card-thumb-big img{width:100%;height:100%;object-fit:cover;border-radius:10px}
+.card-body{flex:1;min-width:0}
+.card-title{font-weight:800;font-size:14px;color:#fff;line-height:1.3}
+.card-serie{color:var(--purple);font-size:12px;font-weight:700}
+.card-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px;align-items:center}
+.card-actions-col{display:flex;flex-direction:column;gap:5px;flex-shrink:0;align-items:flex-end}
+
+/* BADGE */
+.badge{padding:2px 9px;border-radius:20px;font-size:10px;font-weight:800;letter-spacing:.04em;white-space:nowrap}
+
+/* STATUS SELECT INLINE */
+.status-select{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:4px 8px;border-radius:8px;font-size:11px;font-family:'Outfit',sans-serif;cursor:pointer;outline:none;max-width:130px}
+
+/* CARD ACTIONS */
+.card-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+/* FILTERS */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.filters input,.filters select{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:10px;font-size:13px;font-family:'Outfit',sans-serif;flex:1;min-width:120px;outline:none}
+.filters input::placeholder{color:var(--muted)}
+
+/* TOOLBAR */
+.toolbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent,var(--purple))}
+.stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;font-weight:700}
+.stat-value{font-family:'Playfair Display',serif;font-size:26px;color:#fff}
+.stat-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.section-title{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin:18px 0 10px;font-weight:700;display:flex;align-items:center;gap:10px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.serie-row{background:var(--surface);border-radius:10px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.serie-name{font-weight:800;color:var(--purple);font-size:13px}
+.serie-meta{display:flex;gap:14px}
+
+/* TOAST */
+.toast{position:fixed;bottom:calc(82px + var(--safe-b) + 10px);left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid var(--border2);color:var(--text);padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;z-index:999;white-space:nowrap;box-shadow:0 6px 24px #0009;animation:toastPop .2s ease;pointer-events:none;display:none}
+@keyframes toastPop{from{opacity:0;transform:translateX(-50%) translateY(8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#0c0c1cee;border-top:1px solid var(--border);backdrop-filter:blur(20px);display:flex;padding-bottom:var(--safe-b);z-index:200}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 2px;border:none;background:none;color:var(--muted);font-family:'Outfit',sans-serif;cursor:pointer;transition:color .15s}
+.nav-btn.active{color:var(--purple)}
+.nav-icon{font-size:18px;margin-bottom:2px}
+.nav-label{font-size:8px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+
+/* EMPTY */
+.empty{text-align:center;padding:60px 20px;color:var(--muted)}
+.empty-icon{font-size:48px;margin-bottom:14px}
+
+/* FIELD WRAP */
+.field-wrap{display:flex;flex-direction:column;gap:5px}
+
+input[type=file]{display:none}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-row">
+    <div class="logo">💖</div>
+    <div>
+      <div class="header-title">BL Hub</div>
+      <div class="header-sub" id="hdr-sub">Chargement…</div>
+    </div>
+    <span id="saving-dot" class="saving-dot" style="display:none;margin-left:auto"></span>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="collabs">💖 Collabs</button>
+    <button class="tab-btn" data-tab="collab-form">＋ Collab</button>
+    <button class="tab-btn" data-tab="collection">📦 Collection</button>
+    <button class="tab-btn" data-tab="merch-form">＋ Merch</button>
+    <button class="tab-btn" data-tab="stats">📊 Stats</button>
+  </div>
+</header>
+
+<main class="content">
+
+  <!-- ═══════════════════════════════
+       ONGLET 1 : LISTE DES COLLABS
+  ════════════════════════════════ -->
+  <div id="tab-collabs" class="tab-panel active">
+    <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+      <input type="text" id="c-search" placeholder="🔍 Rechercher…" oninput="renderCollabs()" style="flex:2;min-width:140px">
+      <select id="c-f-pays" onchange="renderCollabs()" style="flex:1;min-width:100px">
+        <option value="">Tous pays</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+      <button class="btn-sm edit" onclick="exportCollabsJSON()" style="flex:1">⬇ JSON</button>
+      <button class="btn-sm edit" onclick="document.getElementById('import-collabs-json').click()" style="flex:1">⬆ JSON</button>
+      <input type="file" id="import-collabs-json" accept=".json" onchange="importCollabsJSON(this)">
+      <button class="btn-sm cyan" onclick="exportCollabsCSV()" style="flex:1">⬇ CSV</button>
+      <button class="btn-sm cyan" onclick="document.getElementById('import-collabs-csv').click()" style="flex:1">⬆ CSV</button>
+      <input type="file" id="import-collabs-csv" accept=".csv" onchange="importCollabsCSV(this)">
+    </div>
+    <div id="collabs-list"></div>
+  </div>
+
+  <!-- ═══════════════════════════════
+       ONGLET 2 : FORMULAIRE COLLAB
+  ════════════════════════════════ -->
+  <div id="tab-collab-form" class="tab-panel">
+    <div style="font-family:'Playfair Display',serif;font-size:22px;color:#fff;margin-bottom:18px" id="collab-form-title">Nouvelle Collab</div>
+    <input type="hidden" id="c-edit-id">
+    <div style="display:grid;gap:12px;max-width:560px">
+
+      <div class="field">
+        <label>Photo / Bannière principale</label>
+        <div class="banner-zone" id="c-banner-zone" onclick="document.getElementById('c-banner-input').click()">
+          <img id="c-banner-preview" style="display:none">
+          <span class="banner-icon">🖼️</span>
+          <span class="banner-zone-label" id="c-banner-lbl">Ajouter une image</span>
+        </div>
+        <input type="file" id="c-banner-input" accept="image/*" onchange="handleCollabBanner(this)">
+      </div>
+
+      <div class="row2">
+        <div class="field"><label>Nom de la collab *</label><input type="text" id="c-nom" placeholder="Pop-up Toonique…"></div>
+        <div class="field"><label>Organisateur</label><input type="text" id="c-orga" placeholder="Toonique, Mofun…"></div>
+      </div>
+
+      <div class="field">
+        <label>Séries / Manhwa associées *</label>
+        <div class="serie-tag-input-row">
+          <input type="text" id="c-serie-input" placeholder="Taper une série puis ＋ ou Entrée"
+            onkeydown="if(event.key==='Enter'){event.preventDefault();addCollabSerie()}">
+          <button class="btn-add-serie" onclick="addCollabSerie()" title="Ajouter">＋</button>
+        </div>
+        <div class="serie-tags-wrap" id="c-series-tags"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Lieu / Adresse</label><input type="text" id="c-lieu" placeholder="Hongdae, IFC Mall…"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Ville</label><input type="text" id="c-ville" placeholder="Séoul, Paris…"></div>
+        <div class="field"><label>Pays</label><input type="text" id="c-pays" placeholder="Corée du Sud, France…" list="pays-suggestions">
+          <datalist id="pays-suggestions">
+            <option>Corée du Sud</option><option>Japon</option><option>France</option>
+            <option>Taïwan</option><option>Chine</option><option>États-Unis</option>
+          </datalist>
+        </div>
+      </div>
+
+      <div class="sdiv">Dates de l'événement</div>
+      <div class="row2">
+        <div class="field"><label>Date début</label><input type="date" id="c-date-debut"></div>
+        <div class="field"><label>Date fin</label><input type="date" id="c-date-fin"></div>
+      </div>
+
+      <div class="sdiv">Réservation</div>
+      <div class="row2">
+        <div class="field"><label>Date ouverture résa</label><input type="date" id="c-resa-date"></div>
+        <div class="field"><label>Heure ouverture résa</label><input type="time" id="c-resa-heure"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Statut réservation</label>
+          <select id="c-resa-statut">
+            <option value="">— Non défini —</option>
+            <option>Pas encore ouverte</option><option>Réservé ✓</option>
+            <option>En attente</option><option>Échoué</option>
+            <option>Via proxy</option><option>Sans réservation</option>
+          </select>
+        </div>
+        <div class="field"><label>Site / Lien résa</label><input type="url" id="c-resa-site" placeholder="https://…"></div>
+      </div>
+      <div class="field"><label>Confirmation / Référence</label><input type="text" id="c-resa-ref" placeholder="N° de commande, lien…"></div>
+
+      <div class="sdiv">Vente en ligne</div>
+      <div class="row2">
+        <div class="field"><label>Date vente online</label><input type="date" id="c-online-date"></div>
+        <div class="field"><label>Heure</label><input type="time" id="c-online-heure"></div>
+      </div>
+      <div class="field"><label>Lien boutique online</label><input type="url" id="c-online-lien" placeholder="https://…"></div>
+
+      <div class="sdiv">Réseaux sociaux — Annonces</div>
+      <div class="field">
+        <label>Liens Twitter/X & Instagram</label>
+        <div id="c-links-container"></div>
+        <button class="btn-add-link" onclick="addCollabLink()">＋ Ajouter un lien</button>
+      </div>
+
+      <div class="sdiv">Photos du merch disponible</div>
+      <div class="field">
+        <label>Galerie photos</label>
+        <div class="photo-grid" id="c-photos-grid">
+          <div class="photo-add" onclick="document.getElementById('c-photos-input').click()">
+            <span>📷</span><small>Ajouter</small>
+          </div>
+        </div>
+        <input type="file" id="c-photos-input" accept="image/*" multiple onchange="handleCollabPhotos(this)">
+      </div>
+
+      <div class="sdiv">Statut & Budget</div>
+      <div class="row2">
+        <div class="field"><label>Statut général</label>
+          <select id="c-statut">
+            <option>À venir</option><option>En cours</option>
+            <option>Réservé</option><option>Terminé</option><option>Manqué</option>
+          </select>
+        </div>
+        <div class="field"><label>Budget estimé (€)</label><input type="number" id="c-budget" placeholder="0" step="0.01"></div>
+      </div>
+
+      <div class="field"><label>Notes / Infos pratiques</label>
+        <textarea id="c-notes" placeholder="Proxy, limite d'achat, infos accès…"></textarea>
+      </div>
+
+      <div class="sdiv">Liste MD à acheter</div>
+      <div id="c-merch-section">
+        <div class="merch-add-box">
+          <div class="row2" style="margin-bottom:8px">
+            <input type="text" id="cm-nom" placeholder="Nom du merch *" style="font-size:12px">
+            <select id="cm-type" style="font-size:12px">
+              <option>Photocard</option><option>Photocard Set</option><option>Acrylic Stand</option>
+              <option>Plush / Peluche</option><option>Poster</option><option>Keychain</option>
+              <option>Season Greeting</option><option>Artbook</option><option>Badge / Pin</option>
+              <option>Bromide</option><option>Tapisserie</option><option>Sticker</option>
+              <option>Bonus collab</option><option>Autre</option>
+            </select>
+          </div>
+          <div class="row2" style="margin-bottom:8px">
+            <input type="text" id="cm-prix" placeholder="Prix (₩ ou €)" style="font-size:12px">
+            <select id="cm-bonus" style="font-size:12px">
+              <option value="0">Standard</option><option value="1">🎁 Bonus collab</option>
+            </select>
+          </div>
+          <input type="text" id="cm-notes" placeholder="Notes" style="font-size:12px;margin-bottom:8px">
+          <div style="display:flex;gap:8px">
+            <div class="photo-add" style="width:44px;height:44px;border-radius:10px;flex-shrink:0" onclick="document.getElementById('cm-photo-input').click()">
+              <span style="font-size:16px">📷</span>
+            </div>
+            <input type="file" id="cm-photo-input" accept="image/*" onchange="handleCollabMerchPhoto(this)">
+            <img id="cm-photo-preview" style="display:none;width:44px;height:44px;border-radius:10px;object-fit:cover;flex-shrink:0">
+            <button class="btn-add-link" style="flex:1" onclick="addCollabMerch()">＋ Ajouter ce merch</button>
+          </div>
+        </div>
+        <div id="c-form-merch-list"></div>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:6px">
+        <button class="btn-primary" onclick="submitCollabForm()">💾 Sauvegarder</button>
+      </div>
+      <div id="c-cancel-btn" style="display:none">
+        <button class="btn-ghost" onclick="cancelCollabEdit()" style="width:100%">✕ Annuler la modification</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════
+       ONGLET 3 : COLLECTION MERCH
+  ════════════════════════════════ -->
+  <div id="tab-collection" class="tab-panel">
+    <div class="filters">
+      <input type="text" id="m-search" placeholder="🔍 Rechercher…" oninput="renderCollection()">
+      <select id="m-f-serie" onchange="renderCollection()"><option value="">Toutes séries</option></select>
+      <select id="m-f-type" onchange="renderCollection()"><option value="">Tous types</option></select>
+      <select id="m-f-statut" onchange="renderCollection()"><option value="">Tous statuts</option></select>
+      <select id="m-f-sort" onchange="renderCollection()">
+        <option value="date">↓ Date</option>
+        <option value="serie">A→Z Série</option>
+        <option value="valeur">↓ Valeur</option>
+      </select>
+    </div>
+    <div class="toolbar">
+      <button class="btn-outline cyan" onclick="exportMerchCSV()">⬇ CSV</button>
+      <button class="btn-outline cyan" onclick="document.getElementById('import-merch-csv').click()">⬆ CSV</button>
+      <input type="file" id="import-merch-csv" accept=".csv" onchange="importMerchCSV(this)">
+      <button class="btn-outline" onclick="exportMerchJSON()">⬇ JSON</button>
+      <button class="btn-outline" onclick="document.getElementById('import-merch-json').click()">⬆ JSON</button>
+      <input type="file" id="import-merch-json" accept=".json" onchange="importMerchJSON(this)">
+    </div>
+    <div id="collection-list"></div>
+  </div>
+
+  <!-- ═══════════════════════════════
+       ONGLET 4 : FORMULAIRE MERCH
+  ════════════════════════════════ -->
+  <div id="tab-merch-form" class="tab-panel">
+    <div style="font-family:'Playfair Display',serif;font-size:22px;color:#fff;margin-bottom:18px" id="merch-form-title">Ajouter un item</div>
+    <input type="hidden" id="m-edit-index" value="">
+    <div style="display:grid;gap:10px;max-width:560px">
+
+      <div class="row2">
+        <div class="field-wrap">
+          <div class="field-label">Série</div>
+          <input type="text" id="m-serie" placeholder="Jinx, Low Tide…" list="m-series-suggestions">
+          <datalist id="m-series-suggestions"></datalist>
+        </div>
+        <div class="field-wrap">
+          <div class="field-label">Nom de l'item *</div>
+          <input type="text" id="m-titre" placeholder="Ex: Acrylic Stand Vol.2">
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field-wrap">
+          <div class="field-label">Type</div>
+          <select id="m-type-input"></select>
+        </div>
+        <div class="field-wrap">
+          <div class="field-label">Plateforme</div>
+          <input type="text" id="m-plateforme" placeholder="Toonique, Lezhin…">
+        </div>
+      </div>
+
+      <div class="row3">
+        <div class="field-wrap">
+          <div class="field-label">Statut</div>
+          <select id="m-statut-input"></select>
+        </div>
+        <div class="field-wrap">
+          <div class="field-label">Date</div>
+          <input type="date" id="m-date">
+        </div>
+        <div class="field-wrap">
+          <div class="field-label">Quantité</div>
+          <input type="number" id="m-quantite" value="1" min="1">
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field-wrap">
+          <div class="field-label">Valeur (€)</div>
+          <input type="number" id="m-valeur" placeholder="0.00" step="0.01">
+        </div>
+        <div class="field-wrap">
+          <div class="field-label">Notes</div>
+          <input type="text" id="m-notes" placeholder="Proxy, lien, ref…">
+        </div>
+      </div>
+
+      <div class="field-wrap">
+        <div class="field-label">Photo</div>
+        <div class="photo-area" onclick="document.getElementById('m-photo-input').click()">
+          <div>📷 Appuyer pour ajouter une photo</div>
+          <img id="m-photo-preview" class="photo-preview" style="display:none">
+        </div>
+        <input type="file" id="m-photo-input" accept="image/*" onchange="handleMerchPhoto(this)">
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:4px">
+        <button class="btn-primary" id="m-submit-btn" onclick="submitMerchForm()">✚ Ajouter à la collection</button>
+      </div>
+      <div id="m-cancel-edit" style="display:none">
+        <button class="btn-ghost" onclick="cancelMerchEdit()" style="width:100%">✕ Annuler la modification</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════
+       ONGLET 5 : STATS
+  ════════════════════════════════ -->
+  <div id="tab-stats" class="tab-panel">
+    <div class="section-title">Collabs</div>
+    <div class="stats-grid" id="stats-collabs"></div>
+    <div class="section-title">Collection Merch</div>
+    <div class="stats-grid" id="stats-merch"></div>
+    <div class="section-title">Par série</div>
+    <div id="stats-series"></div>
+    <div class="section-title">Par type</div>
+    <div id="stats-types"></div>
+  </div>
+
+</main>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" data-tab="collabs"><span class="nav-icon">💖</span><span class="nav-label">Collabs</span></button>
+  <button class="nav-btn" data-tab="collab-form"><span class="nav-icon">＋</span><span class="nav-label">Collab</span></button>
+  <button class="nav-btn" data-tab="collection"><span class="nav-icon">📦</span><span class="nav-label">Collection</span></button>
+  <button class="nav-btn" data-tab="merch-form"><span class="nav-icon">＋</span><span class="nav-label">Merch</span></button>
+  <button class="nav-btn" data-tab="stats"><span class="nav-icon">📊</span><span class="nav-label">Stats</span></button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+//  CONSTANTS
+// ══════════════════════════════════════════════════════════
+const MERCH_TYPES = ["Photocard","Photocard Set","Acrylic Stand","Plush / Peluche","Poster","Keychain","Season Greeting","Artbook","Badge / Pin","Bromide","Tapisserie","Sticker","Autre"];
+const MERCH_STATUTS = ["À commander","Wishlist","Pré-commandé","Commandé","En livraison","Chez le proxy","Reçu"];
+const STATUT_COLORS_MERCH = {
+  "À commander":"#6b7280","Wishlist":"#8b5cf6","Pré-commandé":"#f59e0b",
+  "Commandé":"#3b82f6","En livraison":"#06b6d4","Chez le proxy":"#f97316","Reçu":"#10b981"
+};
+const COLLAB_STATUT_STYLE = {
+  'À venir':  {bg:'#c084fc22',color:'#c084fc',border:'#c084fc44'},
+  'En cours': {bg:'#22d3ee22',color:'#22d3ee',border:'#22d3ee44'},
+  'Réservé':  {bg:'#34d39922',color:'#34d399',border:'#34d39944'},
+  'Terminé':  {bg:'#ffffff15',color:'#777',border:'#ffffff20'},
+  'Manqué':   {bg:'#f8717122',color:'#f87171',border:'#f8717144'},
+};
+const RESA_COLOR = {
+  'Réservé ✓':'#34d399','Pas encore ouverte':'#c084fc','En attente':'#fbbf24',
+  'Échoué':'#f87171','Via proxy':'#22d3ee','Sans réservation':'#666',
+};
+
+// ══════════════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════════════
+let collabs = [];
+let collection = [];
+
+// Collab form state
+let cFormBanner = '', cFormPhotos = [], cFormLinks = [], cFormMerch = [], cFormMerchPhoto = '';
+let cEditingId = null;
+let cFormSeries = []; // séries multiples
+
+// Merch form state
+let mCurrentPhoto = '';
+let toastTimer;
+
+// ══════════════════════════════════════════════════════════
+//  STORAGE
+// ══════════════════════════════════════════════════════════
+function loadAll() {
+  try { collabs = JSON.parse(localStorage.getItem('bl-collabs-v3') || '[]'); } catch(e) { collabs = []; }
+  try { collection = JSON.parse(localStorage.getItem('bl-merch-v2') || '[]'); } catch(e) { collection = []; }
+}
+function saveCollabs() {
+  try { localStorage.setItem('bl-collabs-v3', JSON.stringify(collabs)); } catch(e) { toast('⚠️ Stockage plein', '#f87171'); }
+}
+function saveMerch() {
+  showSaving(true);
+  try {
+    localStorage.setItem('bl-merch-v2', JSON.stringify(collection));
+  } catch(e) { toast('⚠️ Stockage plein', '#f87171'); }
+  setTimeout(() => showSaving(false), 600);
+}
+function showSaving(v) { document.getElementById('saving-dot').style.display = v ? 'inline-block' : 'none'; }
+
+// ══════════════════════════════════════════════════════════
+//  TABS
+// ══════════════════════════════════════════════════════════
+document.querySelectorAll('[data-tab]').forEach(btn => {
+  btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+});
+function switchTab(t) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + t).classList.add('active');
+  document.querySelectorAll('[data-tab]').forEach(b => b.classList.toggle('active', b.dataset.tab === t));
+  if (t === 'collabs') renderCollabs();
+  if (t === 'collection') renderCollection();
+  if (t === 'stats') renderStats();
+}
+
+// ══════════════════════════════════════════════════════════
+//  SHARED UTILS
+// ══════════════════════════════════════════════════════════
+function esc(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function fmtDate(s) {
+  if (!s) return '—';
+  try { return new Date(s).toLocaleDateString('fr-FR',{day:'numeric',month:'short'}); } catch { return s; }
+}
+function fmtRange(d1,d2) {
+  if (!d1) return '—';
+  if (!d2||d1===d2) return fmtDate(d1);
+  return fmtDate(d1)+' → '+fmtDate(d2);
+}
+function shortUrl(url) {
+  try { const u=new URL(url); return u.hostname.replace('www.','')+( u.pathname.length>20?u.pathname.slice(0,18)+'…':u.pathname); }
+  catch { return url.slice(0,30); }
+}
+const SOCIAL_ICON = url => {
+  if (!url) return '🔗';
+  if (url.includes('twitter.com')||url.includes('x.com')) return '𝕏';
+  if (url.includes('instagram.com')) return '📸';
+  return '🔗';
+};
+function toast(msg, color) {
+  clearTimeout(toastTimer);
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.style.borderColor = color || '#c084fc55';
+  el.style.display = 'block';
+  toastTimer = setTimeout(() => el.style.display = 'none', 2500);
+}
+function resizeImg(file, maxPx, q=0.82) {
+  return new Promise(res => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let w=img.width,h=img.height;
+        if (w>h&&w>maxPx){h=h*maxPx/w;w=maxPx;}else if(h>maxPx){w=w*maxPx/h;h=maxPx;}
+        canvas.width=w;canvas.height=h;
+        canvas.getContext('2d').drawImage(img,0,0,w,h);
+        res(canvas.toDataURL('image/jpeg',q));
+      };
+      img.src=e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+//  COLLAB — SERIES TAGS
+// ══════════════════════════════════════════════════════════
+function addCollabSerie() {
+  const inp = document.getElementById('c-serie-input');
+  const val = inp.value.trim();
+  if (!val) return;
+  if (!cFormSeries.includes(val)) { cFormSeries.push(val); renderCollabSeriesTags(); }
+  inp.value = ''; inp.focus();
+}
+function removeCollabSerie(s) {
+  cFormSeries = cFormSeries.filter(x => x !== s);
+  renderCollabSeriesTags();
+}
+function renderCollabSeriesTags() {
+  const wrap = document.getElementById('c-series-tags');
+  if (!cFormSeries.length) {
+    wrap.innerHTML = `<span style="font-size:11px;color:var(--muted);font-style:italic">Aucune série ajoutée</span>`;
+    return;
+  }
+  wrap.innerHTML = cFormSeries.map(s =>
+    `<span class="serie-tag">${esc(s)}<button onclick="removeCollabSerie('${esc(s).replace(/'/g,"\\'")}')">×</button></span>`
+  ).join('');
+}
+
+// ══════════════════════════════════════════════════════════
+//  COLLAB — FORM IMAGES
+// ══════════════════════════════════════════════════════════
+async function handleCollabBanner(input) {
+  const file=input.files[0]; if(!file)return;
+  cFormBanner = await resizeImg(file,900);
+  const prev=document.getElementById('c-banner-preview');
+  prev.src=cFormBanner;prev.style.display='block';
+  document.getElementById('c-banner-lbl').textContent='Changer l\'image';
+}
+async function handleCollabPhotos(input) {
+  for(const file of input.files){ const d=await resizeImg(file,600,0.8); cFormPhotos.push(d); }
+  input.value=''; renderCollabPhotosGrid();
+}
+function renderCollabPhotosGrid() {
+  const grid=document.getElementById('c-photos-grid');
+  let html=cFormPhotos.map((p,i)=>`<div class="photo-cell"><img src="${p}"><button class="photo-del" onclick="removeCollabPhoto(${i})">✕</button></div>`).join('');
+  html+=`<div class="photo-add" onclick="document.getElementById('c-photos-input').click()"><span>📷</span><small>Ajouter</small></div>`;
+  grid.innerHTML=html;
+}
+function removeCollabPhoto(i){ cFormPhotos.splice(i,1); renderCollabPhotosGrid(); }
+
+// COLLAB — SOCIAL LINKS
+function addCollabLink(val='') { cFormLinks.push(val); renderCollabLinks(); }
+function renderCollabLinks() {
+  const c=document.getElementById('c-links-container');
+  c.innerHTML=cFormLinks.map((lnk,i)=>`
+    <div class="link-row">
+      <input type="url" value="${esc(lnk)}" placeholder="https://twitter.com/…" oninput="cFormLinks[${i}]=this.value">
+      <button class="link-del" onclick="removeCollabLink(${i})">✕</button>
+    </div>`).join('');
+}
+function removeCollabLink(i){ cFormLinks.splice(i,1); renderCollabLinks(); }
+
+// COLLAB — MERCH IN FORM
+async function handleCollabMerchPhoto(input) {
+  const file=input.files[0]; if(!file)return;
+  cFormMerchPhoto=await resizeImg(file,400,0.78);
+  const prev=document.getElementById('cm-photo-preview');
+  prev.src=cFormMerchPhoto;prev.style.display='block';
+}
+function addCollabMerch() {
+  const nom=document.getElementById('cm-nom').value.trim();
+  if(!nom){toast('⚠️ Nom du merch requis','#f87171');return;}
+  cFormMerch.push({nom,type:document.getElementById('cm-type').value,prix:document.getElementById('cm-prix').value,bonus:document.getElementById('cm-bonus').value==='1',notes:document.getElementById('cm-notes').value.trim(),photo:cFormMerchPhoto,checked:false});
+  document.getElementById('cm-nom').value='';document.getElementById('cm-prix').value='';document.getElementById('cm-notes').value='';document.getElementById('cm-bonus').value='0';document.getElementById('cm-photo-preview').style.display='none';document.getElementById('cm-photo-input').value='';cFormMerchPhoto='';
+  renderCollabFormMerch();toast('✓ Merch ajouté');
+}
+function renderCollabFormMerch() {
+  const el=document.getElementById('c-form-merch-list');
+  if(!cFormMerch.length){el.innerHTML='';return;}
+  el.innerHTML=cFormMerch.map((m,i)=>`<div class="merch-item"><div class="merch-thumb">${m.photo?`<img src="${m.photo}">`:'🎴'}</div><div style="flex:1;min-width:0"><div style="font-weight:700;font-size:12px">${esc(m.nom)} ${m.bonus?'🎁':''}</div><div style="font-size:10px;color:var(--muted)">${m.type}${m.prix?' · '+m.prix:''}</div></div><button class="btn-sm danger" onclick="removeCollabFormMerch(${i})">✕</button></div>`).join('');
+}
+function removeCollabFormMerch(i){ cFormMerch.splice(i,1); renderCollabFormMerch(); }
+
+// COLLAB — SUBMIT
+function submitCollabForm() {
+  const nom=document.getElementById('c-nom').value.trim();
+  if(!cFormSeries.length||!nom){toast('⚠️ Séries et nom requis','#f87171');return;}
+  const existing=cEditingId?collabs.find(c=>c.id===cEditingId):null;
+  const collab={
+    id:cEditingId||(Date.now().toString(36)+Math.random().toString(36).slice(2)),
+    series:[...cFormSeries],
+    serie:cFormSeries[0]||'', // rétrocompat affichage
+    nom,
+    orga:document.getElementById('c-orga').value.trim(),
+    lieu:document.getElementById('c-lieu').value.trim(),
+    ville:document.getElementById('c-ville').value.trim(),
+    pays:document.getElementById('c-pays').value.trim(),
+    dateDebut:document.getElementById('c-date-debut').value,
+    dateFin:document.getElementById('c-date-fin').value,
+    resaDate:document.getElementById('c-resa-date').value,
+    resaHeure:document.getElementById('c-resa-heure').value,
+    resaStatut:document.getElementById('c-resa-statut').value,
+    resaSite:document.getElementById('c-resa-site').value.trim(),
+    resaRef:document.getElementById('c-resa-ref').value.trim(),
+    onlineDate:document.getElementById('c-online-date').value,
+    onlineHeure:document.getElementById('c-online-heure').value,
+    onlineLien:document.getElementById('c-online-lien').value.trim(),
+    statut:document.getElementById('c-statut').value,
+    budget:document.getElementById('c-budget').value,
+    notes:document.getElementById('c-notes').value.trim(),
+    banner:cFormBanner||(existing?existing.banner:''),
+    photos:cFormPhotos.length?cFormPhotos:(existing?existing.photos:[]),
+    links:cFormLinks.filter(Boolean),
+    merch:cFormMerch.length?cFormMerch:(existing?existing.merch:[]),
+  };
+  if(cEditingId){const idx=collabs.findIndex(c=>c.id===cEditingId);if(idx>=0)collabs[idx]=collab;toast('✓ Collab modifiée !');}
+  else{collabs.unshift(collab);toast('✓ Collab ajoutée !');}
+  saveCollabs();updatePaysFilter();resetCollabForm();renderCollabs();switchTab('collabs');
+}
+function startCollabEdit(id) {
+  const c=collabs.find(x=>x.id===id); if(!c)return;
+  cEditingId=id;
+  ['nom','orga','lieu','ville'].forEach(f=>document.getElementById('c-'+f).value=c[f]||'');
+  document.getElementById('c-pays').value=c.pays||'';
+  document.getElementById('c-date-debut').value=c.dateDebut||'';
+  document.getElementById('c-date-fin').value=c.dateFin||'';
+  document.getElementById('c-resa-date').value=c.resaDate||'';
+  document.getElementById('c-resa-heure').value=c.resaHeure||'';
+  document.getElementById('c-resa-statut').value=c.resaStatut||'';
+  document.getElementById('c-resa-site').value=c.resaSite||'';
+  document.getElementById('c-resa-ref').value=c.resaRef||'';
+  document.getElementById('c-online-date').value=c.onlineDate||'';
+  document.getElementById('c-online-heure').value=c.onlineHeure||'';
+  document.getElementById('c-online-lien').value=c.onlineLien||'';
+  document.getElementById('c-statut').value=c.statut||'À venir';
+  document.getElementById('c-budget').value=c.budget||'';
+  document.getElementById('c-notes').value=c.notes||'';
+  // séries multiples — rétrocompat avec ancien champ serie string
+  cFormSeries = c.series ? [...c.series] : (c.serie ? [c.serie] : []);
+  renderCollabSeriesTags();
+  cFormBanner=c.banner||'';
+  if(cFormBanner){const prev=document.getElementById('c-banner-preview');prev.src=cFormBanner;prev.style.display='block';document.getElementById('c-banner-lbl').textContent='Changer l\'image';}
+  cFormPhotos=JSON.parse(JSON.stringify(c.photos||[]));renderCollabPhotosGrid();
+  cFormLinks=[...(c.links||[])];renderCollabLinks();
+  cFormMerch=JSON.parse(JSON.stringify(c.merch||[]));renderCollabFormMerch();
+  document.getElementById('collab-form-title').textContent='Modifier la Collab';
+  document.getElementById('c-cancel-btn').style.display='block';
+  switchTab('collab-form');window.scrollTo(0,0);
+}
+function cancelCollabEdit(){ resetCollabForm(); switchTab('collabs'); }
+function resetCollabForm() {
+  ['c-nom','c-orga','c-lieu','c-ville','c-pays','c-date-debut','c-date-fin','c-resa-date','c-resa-heure','c-resa-ref','c-resa-site','c-online-date','c-online-heure','c-online-lien','c-budget','c-notes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('c-resa-statut').value='';
+  document.getElementById('c-statut').value='À venir';
+  cEditingId=null;cFormBanner='';cFormSeries=[];renderCollabSeriesTags();
+  document.getElementById('c-serie-input').value='';
+  const prev=document.getElementById('c-banner-preview');prev.src='';prev.style.display='none';
+  document.getElementById('c-banner-lbl').textContent='Ajouter une image';
+  document.getElementById('c-banner-input').value='';
+  cFormPhotos=[];renderCollabPhotosGrid();
+  cFormLinks=[];renderCollabLinks();
+  cFormMerch=[];renderCollabFormMerch();
+  cFormMerchPhoto='';
+  document.getElementById('collab-form-title').textContent='Nouvelle Collab';
+  document.getElementById('c-cancel-btn').style.display='none';
+}
+function deleteCollab(id) {
+  if(!confirm('Supprimer cette collab ?'))return;
+  collabs=collabs.filter(c=>c.id!==id);saveCollabs();updatePaysFilter();renderCollabs();toast('🗑️ Supprimée','#f87171');
+}
+function toggleCollabMerch(collabId,idx) {
+  const c=collabs.find(x=>x.id===collabId);if(!c||!c.merch[idx])return;
+  c.merch[idx].checked=!c.merch[idx].checked;saveCollabs();renderCollabs();
+}
+
+// COLLAB — RENDER
+function renderCollabs() {
+  const search=(document.getElementById('c-search').value||'').toLowerCase();
+  const fPays=document.getElementById('c-f-pays').value;
+  const container=document.getElementById('collabs-list');
+  const items=collabs.filter(c=>{
+    const seriesArr = c.series && c.series.length ? c.series : (c.serie ? [c.serie] : []);
+    const seriesStr = seriesArr.join(' ').toLowerCase();
+    return (!search||c.nom.toLowerCase().includes(search)||seriesStr.includes(search)||(c.ville||'').toLowerCase().includes(search)||(c.pays||'').toLowerCase().includes(search))&&(!fPays||c.pays===fPays);
+  }).sort((a,b)=>(a.dateDebut||'9999')<(b.dateDebut||'9999')?-1:1);
+  if(!items.length){container.innerHTML=`<div class="empty"><div class="empty-icon">💖</div><div>Aucune collab. Ajoute-en une via ＋</div></div>`;updateHdr();return;}
+  container.innerHTML=items.map(c=>buildCollabCard(c)).join('');
+  updateHdr();
+}
+function buildCollabCard(c) {
+  const st=COLLAB_STATUT_STYLE[c.statut]||COLLAB_STATUT_STYLE['À venir'];
+  const merch=c.merch||[];const done=merch.filter(m=>m.checked).length;const total=merch.length;const bonus=merch.filter(m=>m.bonus).length;
+  const resaColor=RESA_COLOR[c.resaStatut]||'var(--text)';
+  const loc=[c.lieu,c.ville,c.pays].filter(Boolean).join(', ');
+  const linksHtml=(c.links||[]).length?`<div class="social-links">${(c.links||[]).map(l=>`<a class="social-link" href="${esc(l)}" target="_blank" rel="noopener">${SOCIAL_ICON(l)} ${shortUrl(l)}</a>`).join('')}</div>`:'';
+  const galleryHtml=(c.photos||[]).length?`<div class="gallery">${(c.photos||[]).map(p=>`<img src="${p}" alt="">`).join('')}</div>`:'';
+  const standardMerch=merch.filter(m=>!m.bonus);const bonusMerch=merch.filter(m=>m.bonus);
+  const merchHtml=total?`<div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">MD à acheter · ${done}/${total} acquis ${bonus?`<span style="color:var(--gold)">· 🎁 ${bonus} bonus</span>`:''}</div><div class="prog-wrap"><div class="prog-bar" style="width:${total?Math.round(done/total*100):0}%"></div></div>${[...standardMerch.map(m=>collabMerchRow(m,c.id,merch.indexOf(m))),...(bonusMerch.length?[`<div style="font-size:10px;color:var(--gold);font-weight:700;margin:6px 0 4px;text-transform:uppercase;letter-spacing:.06em">🎁 Bonus collab</div>`]:[]),...bonusMerch.map(m=>collabMerchRow(m,c.id,merch.indexOf(m)))].join('')}`:'';
+  // séries — rétrocompat
+  const seriesArr = c.series && c.series.length ? c.series : (c.serie ? [c.serie] : []);
+  const seriesTagsHtml = seriesArr.map(s=>`<span style="display:inline-flex;align-items:center;background:#c084fc18;border:1px solid #c084fc33;border-radius:12px;padding:2px 9px;font-size:11px;font-weight:700;color:var(--purple)">${esc(s)}</span>`).join('');
+  return `<div class="collab-card" id="ccard-${c.id}">
+    <div class="collab-banner">${c.banner?`<img src="${c.banner}" alt="">`: '<span class="collab-banner-ph">💖</span>'}<span class="status-pill" style="background:${st.bg};color:${st.color};border:1px solid ${st.border}">${c.statut}</span></div>
+    <div class="collab-body">
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px">${seriesTagsHtml}</div>
+      <div class="collab-name">${esc(c.nom)}</div>
+      <div class="meta-grid">
+        <div class="meta-box"><div class="meta-lbl">📍 Localisation</div><div class="meta-val purple">${esc(loc||'—')}</div></div>
+        <div class="meta-box"><div class="meta-lbl">📅 Dates</div><div class="meta-val purple">${fmtRange(c.dateDebut,c.dateFin)}</div></div>
+        <div class="meta-box"><div class="meta-lbl">🎟️ Réservation</div><div class="meta-val" style="color:${resaColor}">${esc(c.resaStatut||'—')}</div></div>
+        <div class="meta-box"><div class="meta-lbl">🛒 Vente online</div><div class="meta-val gold">${c.onlineDate?(fmtDate(c.onlineDate)+(c.onlineHeure?' · '+c.onlineHeure:'')):' —'}</div></div>
+        ${c.resaDate?`<div class="meta-box"><div class="meta-lbl">⏰ Ouv. résa</div><div class="meta-val">${fmtDate(c.resaDate)}${c.resaHeure?' · '+c.resaHeure:''}</div></div>`:''}
+        ${c.budget?`<div class="meta-box"><div class="meta-lbl">💰 Budget</div><div class="meta-val gold">${parseFloat(c.budget).toFixed(2)} €</div></div>`:''}
+      </div>
+      ${c.resaRef?`<div style="background:#c084fc11;border:1px solid #c084fc33;border-radius:10px;padding:8px 12px;font-size:12px;color:var(--purple);margin-bottom:10px">🎟️ Réf: ${esc(c.resaRef)}</div>`:''}
+      ${c.resaSite?`<a href="${esc(c.resaSite)}" target="_blank" style="display:block;background:#c084fc11;border:1px solid #c084fc33;border-radius:10px;padding:8px 12px;font-size:12px;color:var(--purple);margin-bottom:10px;text-decoration:none">🎟️ Site réservation →</a>`:''}
+      ${c.onlineLien?`<a href="${esc(c.onlineLien)}" target="_blank" style="display:block;background:#22d3ee11;border:1px solid #22d3ee33;border-radius:10px;padding:8px 12px;font-size:12px;color:var(--cyan);margin-bottom:10px;text-decoration:none">🛒 Boutique online →</a>`:''}
+      ${c.notes?`<div class="md-block">📝 ${esc(c.notes)}</div>`:''}
+      ${linksHtml}${galleryHtml}${merchHtml}
+      <div class="card-actions" style="margin-top:12px">
+        <button class="btn-sm edit" onclick="startCollabEdit('${c.id}')">✏️ Modifier</button>
+        <button class="btn-sm danger" onclick="deleteCollab('${c.id}')">🗑️ Supprimer</button>
+      </div>
+    </div>
+  </div>`;
+}
+function collabMerchRow(m,collabId,idx) {
+  const done=m.checked;
+  return `<div class="merch-item"><div class="merch-thumb">${m.photo?`<img src="${m.photo}">`:'🎴'}</div><div style="flex:1;min-width:0"><div style="font-weight:700;font-size:12px">${esc(m.nom)}</div><div style="font-size:10px;color:var(--muted)">${m.type}${m.prix?' · '+m.prix:''}${m.notes?' · '+esc(m.notes):''}</div></div>${m.prix?`<span style="font-size:11px;color:var(--gold);font-weight:700;flex-shrink:0">${esc(m.prix)}</span>`:''}<button class="merch-check ${done?'done':''}" onclick="toggleCollabMerch('${collabId}',${idx})" title="${done?'Acquis':'Marquer acquis'}">✓</button></div>`;
+}
+function updateHdr() {
+  const avenir=collabs.filter(c=>['À venir','En cours','Réservé'].includes(c.statut)).length;
+  const total=collection.reduce((s,i)=>s+(parseInt(i.quantite)||1),0);
+  document.getElementById('hdr-sub').textContent=`${collabs.length} collab${collabs.length>1?'s':''} · ${avenir} à venir · ${total} merch`;
+}
+function updatePaysFilter() {
+  const pays=[...new Set(collabs.map(c=>c.pays).filter(Boolean))].sort();
+  const sel=document.getElementById('c-f-pays');const cur=sel.value;
+  sel.innerHTML='<option value="">Tous pays</option>'+pays.map(p=>`<option value="${esc(p)}">${esc(p)}</option>`).join('');
+  if(pays.includes(cur))sel.value=cur;
+}
+
+// ══════════════════════════════════════════════════════════
+//  COLLECTION MERCH
+// ══════════════════════════════════════════════════════════
+function initMerchSelects() {
+  const tsel=document.getElementById('m-type-input');
+  MERCH_TYPES.forEach(t=>{const o=document.createElement('option');o.value=t;o.textContent=t;tsel.appendChild(o);});
+  const ssel=document.getElementById('m-statut-input');
+  MERCH_STATUTS.forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent=s;ssel.appendChild(o);});
+  const ftype=document.getElementById('m-f-type');
+  MERCH_TYPES.forEach(t=>{const o=document.createElement('option');o.value=t;o.textContent=t;ftype.appendChild(o);});
+  const fstat=document.getElementById('m-f-statut');
+  MERCH_STATUTS.forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent=s;fstat.appendChild(o);});
+}
+function updateMerchSeriesSuggestions() {
+  const series=[...new Set(collection.map(i=>i.serie).filter(Boolean))].sort();
+  const dl=document.getElementById('m-series-suggestions');
+  dl.innerHTML='';series.forEach(s=>{const o=document.createElement('option');o.value=s;dl.appendChild(o);});
+  const fSerie=document.getElementById('m-f-serie');const cur=fSerie.value;
+  fSerie.innerHTML='<option value="">Toutes séries</option>';
+  series.forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent=s;fSerie.appendChild(o);});
+  fSerie.value=cur;
+}
+function renderCollection() {
+  updateMerchSeriesSuggestions();
+  const search=document.getElementById('m-search').value.toLowerCase();
+  const fSerie=document.getElementById('m-f-serie').value;
+  const fType=document.getElementById('m-f-type').value;
+  const fStatut=document.getElementById('m-f-statut').value;
+  const fSort=document.getElementById('m-f-sort').value;
+  let items=collection.filter(item=>(!search||item.serie.toLowerCase().includes(search)||item.titre.toLowerCase().includes(search))&&(!fSerie||item.serie===fSerie)&&(!fType||item.type===fType)&&(!fStatut||item.statut===fStatut));
+  items=items.slice().sort((a,b)=>{
+    if(fSort==='date')return(b.date||'').localeCompare(a.date||'');
+    if(fSort==='serie')return(a.serie||'').localeCompare(b.serie||'');
+    if(fSort==='valeur')return(parseFloat(b.valeur)||0)-(parseFloat(a.valeur)||0);
+    return 0;
+  });
+  const list=document.getElementById('collection-list');
+  if(items.length===0){list.innerHTML=`<div class="empty"><div class="empty-icon">🗃️</div><div>Aucun item. Ajoute ta première pièce !</div></div>`;updateHdr();return;}
+  list.innerHTML=items.map(item=>{
+    const realIdx=collection.indexOf(item);
+    const color=STATUT_COLORS_MERCH[item.statut]||'#666';
+    const thumb=item.photo?`<div class="card-thumb-big"><img src="${item.photo}" alt=""></div>`:`<div class="card-thumb-big">🎴</div>`;
+    const statusOptions=MERCH_STATUTS.map(s=>`<option value="${s}" ${s===item.statut?'selected':''}>${s}</option>`).join('');
+    return `<div class="card" id="mcard-${realIdx}">${thumb}<div class="card-body"><div class="card-title">${esc(item.titre)}</div><div class="card-serie">${esc(item.serie)}</div><div class="card-meta"><span class="badge" style="background:${color}22;color:${color};border:1px solid ${color}44">${item.statut}</span><span style="color:var(--muted);font-size:11px">${item.type}</span>${item.plateforme?`<span style="color:var(--muted);font-size:11px">· ${esc(item.plateforme)}</span>`:''}${item.valeur>0?`<span style="color:var(--gold);font-size:11px;font-weight:800">${parseFloat(item.valeur).toFixed(2)}€</span>`:''}${item.quantite>1?`<span style="color:var(--muted);font-size:11px">×${item.quantite}</span>`:''}</div>${item.notes?`<div style="color:var(--muted);font-size:11px;margin-top:5px;font-style:italic">${esc(item.notes)}</div>`:''}</div><div class="card-actions-col"><select class="status-select" onchange="updateMerchStatut(${realIdx},this.value)">${statusOptions}</select><div style="display:flex;gap:4px;margin-top:2px"><button class="btn-icon" onclick="editMerchItem(${realIdx})">✏️</button><button class="btn-icon danger" onclick="deleteMerchItem(${realIdx})">🗑️</button></div></div></div>`;
+  }).join('');
+  updateHdr();
+}
+function handleMerchPhoto(input) {
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{const img=new Image();img.onload=()=>{const canvas=document.createElement('canvas');const MAX=400;let w=img.width,h=img.height;if(w>h&&w>MAX){h=h*MAX/w;w=MAX;}else if(h>MAX){w=w*MAX/h;h=MAX;}canvas.width=w;canvas.height=h;canvas.getContext('2d').drawImage(img,0,0,w,h);mCurrentPhoto=canvas.toDataURL('image/jpeg',0.75);const prev=document.getElementById('m-photo-preview');prev.src=mCurrentPhoto;prev.style.display='block';};img.src=e.target.result;};
+  reader.readAsDataURL(file);
+}
+function submitMerchForm() {
+  const titre=document.getElementById('m-titre').value.trim();
+  if(!titre){toast("⚠️ Nom de l'item requis","#f87171");return;}
+  const item={serie:document.getElementById('m-serie').value.trim()||'—',titre,type:document.getElementById('m-type-input').value,plateforme:document.getElementById('m-plateforme').value.trim(),statut:document.getElementById('m-statut-input').value,date:document.getElementById('m-date').value,quantite:parseInt(document.getElementById('m-quantite').value)||1,valeur:parseFloat(document.getElementById('m-valeur').value)||0,notes:document.getElementById('m-notes').value.trim(),photo:mCurrentPhoto};
+  const editIdx=document.getElementById('m-edit-index').value;
+  if(editIdx!==''){collection[parseInt(editIdx)]=item;toast('✓ Modifié !');}
+  else{collection.unshift(item);toast('✓ Ajouté !');}
+  saveMerch();clearMerchForm();renderCollection();switchTab('collection');
+}
+function clearMerchForm() {
+  ['m-serie','m-titre','m-plateforme','m-date','m-notes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('m-quantite').value='1';document.getElementById('m-valeur').value='';
+  document.getElementById('m-photo-input').value='';document.getElementById('m-photo-preview').style.display='none';
+  document.getElementById('m-edit-index').value='';document.getElementById('merch-form-title').textContent='Ajouter un item';
+  document.getElementById('m-cancel-edit').style.display='none';document.getElementById('m-submit-btn').textContent='✚ Ajouter à la collection';
+  mCurrentPhoto='';
+}
+function editMerchItem(idx) {
+  const item=collection[idx];
+  document.getElementById('m-serie').value=item.serie==='—'?'':item.serie;
+  document.getElementById('m-titre').value=item.titre;
+  document.getElementById('m-type-input').value=item.type;
+  document.getElementById('m-plateforme').value=item.plateforme||'';
+  document.getElementById('m-statut-input').value=item.statut;
+  document.getElementById('m-date').value=item.date||'';
+  document.getElementById('m-quantite').value=item.quantite;
+  document.getElementById('m-valeur').value=item.valeur||'';
+  document.getElementById('m-notes').value=item.notes||'';
+  document.getElementById('m-edit-index').value=idx;
+  mCurrentPhoto=item.photo||'';
+  const prev=document.getElementById('m-photo-preview');
+  if(mCurrentPhoto){prev.src=mCurrentPhoto;prev.style.display='block';}else prev.style.display='none';
+  document.getElementById('merch-form-title').textContent='Modifier l\'item';
+  document.getElementById('m-cancel-edit').style.display='block';
+  document.getElementById('m-submit-btn').textContent='✔ Sauvegarder les modifications';
+  switchTab('merch-form');
+}
+function cancelMerchEdit(){ clearMerchForm(); switchTab('collection'); }
+function deleteMerchItem(idx){ if(!confirm('Supprimer cet item ?'))return;collection.splice(idx,1);saveMerch();renderCollection();toast('🗑️ Supprimé'); }
+function updateMerchStatut(idx,statut){ collection[idx].statut=statut;saveMerch();renderCollection(); }
+
+// ══════════════════════════════════════════════════════════
+//  STATS
+// ══════════════════════════════════════════════════════════
+function renderStats() {
+  // Collabs stats
+  const avenir=collabs.filter(c=>['À venir','En cours','Réservé'].includes(c.statut)).length;
+  const budgetTotal=collabs.reduce((s,c)=>s+(parseFloat(c.budget)||0),0);
+  const collabsMerchTotal=collabs.reduce((s,c)=>s+(c.merch||[]).length,0);
+  const collabsMerchDone=collabs.reduce((s,c)=>s+(c.merch||[]).filter(m=>m.checked).length,0);
+
+  // Séries popularity ranking
+  const serieCounts = {};
+  const serieOrgas = {};
+  collabs.forEach(c => {
+    const arr = c.series && c.series.length ? c.series : (c.serie ? [c.serie] : []);
+    arr.forEach(s => {
+      serieCounts[s] = (serieCounts[s]||0) + 1;
+      if (!serieOrgas[s]) serieOrgas[s] = new Set();
+      if (c.orga) serieOrgas[s].add(c.orga);
+    });
+  });
+  const serieRanking = Object.entries(serieCounts).sort((a,b)=>b[1]-a[1]);
+  const maxCount = serieRanking[0]?.[1] || 1;
+  const rankColors = ['#fbbf24','#9d9bc0','#f97316','#c084fc','#f472b6'];
+
+  document.getElementById('stats-collabs').innerHTML=[
+    {label:'Total collabs',value:collabs.length,color:'#c084fc'},
+    {label:'À venir / En cours',value:avenir,color:'#f472b6'},
+    {label:'Séries différentes',value:serieRanking.length,color:'#22d3ee'},
+    {label:'Budget total',value:budgetTotal.toFixed(2)+' €',color:'#fbbf24'},
+    {label:'MD acquis',value:`${collabsMerchDone}/${collabsMerchTotal}`,color:'#34d399'},
+  ].map(s=>`<div class="stat-card" style="--accent:${s.color}"><div class="stat-label">${s.label}</div><div class="stat-value">${s.value}</div></div>`).join('');
+
+  // Ranking HTML
+  const rankingHtml = serieRanking.length === 0
+    ? `<div style="color:var(--muted);font-size:13px;padding:10px 0">Aucune donnée.</div>`
+    : serieRanking.map(([name, count], i) => {
+        const orgas = [...(serieOrgas[name]||[])].slice(0,3).join(', ');
+        return `<div style="display:flex;align-items:center;gap:12px;background:var(--surface);border-radius:12px;padding:11px 14px;margin-bottom:7px">
+          <div style="font-family:'Playfair Display',serif;font-size:18px;width:28px;text-align:center;flex-shrink:0;color:${rankColors[i]||'#6b6898'}">${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:800;font-size:14px;color:#fff">${esc(name)}</div>
+            ${orgas?`<div style="font-size:10px;color:var(--muted);margin-top:2px">via ${esc(orgas)}${(serieOrgas[name]||new Set()).size>3?' +'+((serieOrgas[name]||new Set()).size-3):''}</div>`:''}
+            <div style="flex:1;height:6px;background:var(--bg2);border-radius:3px;overflow:hidden;margin-top:5px">
+              <div style="width:${Math.round(count/maxCount*100)}%;height:100%;border-radius:3px;background:linear-gradient(90deg,#c084fc,#f472b6)"></div>
+            </div>
+          </div>
+          <div style="font-size:12px;font-weight:800;color:var(--purple);min-width:28px;text-align:right">${count}×</div>
+        </div>`;
+      }).join('');
+
+  // Inject ranking (remove old one first to avoid duplicates)
+  document.getElementById('stats-serie-ranking-section')?.remove();
+  document.getElementById('stats-collabs').insertAdjacentHTML('afterend', `
+    <div id="stats-serie-ranking-section">
+      <div class="sdiv" style="margin-top:20px">🏆 Séries les plus populaires en collab</div>
+      <div>${rankingHtml}</div>
+    </div>
+  `);
+
+  // Merch stats
+  const total=collection.reduce((s,i)=>s+(parseInt(i.quantite)||1),0);
+  const val=collection.reduce((s,i)=>s+(parseFloat(i.valeur)||0)*(parseInt(i.quantite)||1),0);
+  const recu=collection.filter(i=>i.statut==='Reçu').reduce((s,i)=>s+(parseInt(i.quantite)||1),0);
+  const enRoute=collection.filter(i=>['Commandé','En livraison','Chez le proxy'].includes(i.statut)).reduce((s,i)=>s+(parseInt(i.quantite)||1),0);
+  document.getElementById('stats-merch').innerHTML=[
+    {label:'Total items',value:total,color:'#f472b6'},
+    {label:'Valeur estimée',value:val.toFixed(2)+' €',color:'#fbbf24'},
+    {label:'Reçus',value:recu,color:'#34d399'},
+    {label:'En route',value:enRoute,color:'#22d3ee'},
+    {label:'Séries',value:new Set(collection.map(i=>i.serie)).size,color:'#c084fc'},
+  ].map(s=>`<div class="stat-card" style="--accent:${s.color}"><div class="stat-label">${s.label}</div><div class="stat-value">${s.value}</div></div>`).join('');
+
+  // By série
+  const allSeries=[...new Set(collection.map(i=>i.serie).filter(Boolean))].sort();
+  document.getElementById('stats-series').innerHTML=allSeries.length===0?'<div style="color:var(--muted);font-size:13px;padding:10px">Aucune série.</div>':allSeries.map(serie=>{const items=collection.filter(i=>i.serie===serie);const t=items.reduce((s,i)=>s+(parseInt(i.quantite)||1),0);const v=items.reduce((s,i)=>s+(parseFloat(i.valeur)||0)*(parseInt(i.quantite)||1),0);return `<div class="serie-row"><span class="serie-name">${esc(serie)}</span><div class="serie-meta"><span style="color:var(--muted);font-size:12px">${t} items</span><span style="color:var(--gold);font-size:12px;font-weight:800">${v.toFixed(2)} €</span></div></div>`;}).join('');
+
+  // By type
+  const usedTypes=MERCH_TYPES.filter(type=>collection.some(i=>i.type===type));
+  document.getElementById('stats-types').innerHTML=usedTypes.length===0?'<div style="color:var(--muted);font-size:13px;padding:10px">Aucun type.</div>':usedTypes.map(type=>{const t=collection.filter(i=>i.type===type).reduce((s,i)=>s+(parseInt(i.quantite)||1),0);return `<div class="serie-row"><span style="color:var(--text);font-size:13px">${type}</span><span style="color:var(--purple);font-weight:800;font-size:13px">${t}</span></div>`;}).join('');
+}
+
+// ══════════════════════════════════════════════════════════
+//  EXPORTS / IMPORTS — COLLABS
+// ══════════════════════════════════════════════════════════
+function exportCollabsJSON() {
+  const data=JSON.stringify({collabs,exportedAt:new Date().toISOString()},null,2);
+  const blob=new Blob([data],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=`bl-collabs-${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  toast('✓ Sauvegarde collabs téléchargée !');
+}
+function importCollabsJSON(input) {
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{try{
+    const data=JSON.parse(e.target.result);
+    const imported=data.collabs||(Array.isArray(data)?data:null);
+    if(!imported){toast('⚠️ Fichier invalide','#f87171');return;}
+    // rétrocompat : si série est un string, convertir en array
+    imported.forEach(c=>{
+      if(!c.series||!c.series.length) c.series = c.serie ? [c.serie] : [];
+      if(!c.serie) c.serie = c.series[0]||'';
+    });
+    if(!confirm(`Importer ${imported.length} collab(s) ?\nRemplace toutes tes données actuelles.`))return;
+    collabs=imported;saveCollabs();updatePaysFilter();renderCollabs();toast(`✓ ${imported.length} collab(s) importée(s) !`);
+  }catch(err){toast('⚠️ Erreur lecture fichier','#f87171');}input.value='';};
+  reader.readAsText(file);
+}
+function exportCollabsCSV() {
+  const FIELDS=['id','series','nom','orga','lieu','ville','pays','dateDebut','dateFin','resaDate','resaHeure','resaStatut','resaSite','resaRef','onlineDate','onlineHeure','onlineLien','statut','budget','notes'];
+  function cc(val){
+    let s;
+    if (Array.isArray(val)) s = val.join(' | ');
+    else s = (val===null||val===undefined)?'':String(val);
+    if(s.includes('"')||s.includes(',')||s.includes('\n'))return '"'+s.replace(/"/g,'""')+'"';
+    return s;
+  }
+  const header=[...FIELDS,'links','merch_noms','merch_types','merch_prix','merch_notes','merch_checked'];
+  const rows=collabs.map(c=>{
+    const base=FIELDS.map(f=>{
+      if(f==='series'){
+        const arr = c.series && c.series.length ? c.series : (c.serie ? [c.serie] : []);
+        return cc(arr);
+      }
+      return cc(c[f]);
+    });
+    const links=cc((c.links||[]).join(' | '));
+    const merch=c.merch||[];
+    return [...base,links,cc(merch.map(m=>m.nom).join(' | ')),cc(merch.map(m=>m.type).join(' | ')),cc(merch.map(m=>m.prix||'').join(' | ')),cc(merch.map(m=>m.notes||'').join(' | ')),cc(merch.map(m=>m.checked?'1':'0').join(' | '))].join(',');
+  });
+  const csv=[header.join(','),...rows].join('\n');
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=`bl-collabs-${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);toast('✓ Export CSV collabs !','#22d3ee55');
+}
+function importCollabsCSV(input) {
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const text=e.target.result.replace(/^\uFEFF/,'');
+      const lines=text.split(/\r?\n/).filter(l=>l.trim());
+      if(lines.length<2){toast('⚠️ CSV vide','#f87171');return;}
+      function parseCSVLine(line){const result=[];let cur='',inQ=false;for(let i=0;i<line.length;i++){const ch=line[i];if(inQ){if(ch==='"'&&line[i+1]==='"'){cur+='"';i++;}else if(ch==='"'){inQ=false;}else{cur+=ch;}}else{if(ch==='"'){inQ=true;}else if(ch===','){result.push(cur);cur='';}else{cur+=ch;}}}result.push(cur);return result;}
+      const headers=parseCSVLine(lines[0]);
+      const imported=lines.slice(1).map(line=>{const vals=parseCSVLine(line);const obj={};headers.forEach((h,i)=>{obj[h]=vals[i]||'';});
+        // Parse series (pipe-separated) with rétrocompat for old 'serie' field
+        if (obj.series) { obj.series = obj.series.split(' | ').filter(Boolean); }
+        else if (obj.serie) { obj.series = [obj.serie]; }
+        else { obj.series = []; }
+        obj.serie = obj.series[0] || '';
+        obj.links=obj.links?obj.links.split(' | ').filter(Boolean):[];const noms=obj.merch_noms?obj.merch_noms.split(' | '):[];const types=obj.merch_types?obj.merch_types.split(' | '):[];const prix=obj.merch_prix?obj.merch_prix.split(' | '):[];const mnotes=obj.merch_notes?obj.merch_notes.split(' | '):[];const checked=obj.merch_checked?obj.merch_checked.split(' | '):[];obj.merch=noms.map((nom,i)=>({nom,type:types[i]||'',prix:prix[i]||'',notes:mnotes[i]||'',checked:checked[i]==='1',bonus:false,photo:''})).filter(m=>m.nom);['merch_noms','merch_types','merch_prix','merch_notes','merch_checked'].forEach(k=>delete obj[k]);if(!obj.banner)obj.banner='';if(!obj.photos)obj.photos=[];return obj;}).filter(c=>c.nom);
+      if(!imported.length){toast('⚠️ Aucune ligne valide','#f87171');return;}
+      if(!confirm(`Importer ${imported.length} collab(s) ?\nRemplace toutes tes données actuelles.`))return;
+      collabs=imported;saveCollabs();updatePaysFilter();renderCollabs();toast(`✓ ${imported.length} collab(s) importée(s) !`,'#22d3ee55');
+    }catch(err){toast('⚠️ Erreur CSV','#f87171');console.error(err);}
+    input.value='';
+  };
+  reader.readAsText(file,'UTF-8');
+}
+
+// ══════════════════════════════════════════════════════════
+//  EXPORTS / IMPORTS — MERCH
+// ══════════════════════════════════════════════════════════
+function exportMerchJSON() {
+  const data=JSON.stringify({collection,exportedAt:new Date().toISOString()},null,2);
+  const blob=new Blob([data],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=`bl-merch-${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);toast('✓ Sauvegarde merch téléchargée !');
+}
+function importMerchJSON(input) {
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{try{const data=JSON.parse(e.target.result);const ic=data.collection||(Array.isArray(data)?data:null);if(!ic){toast('⚠️ Fichier invalide','#f87171');return;}if(!confirm(`Importer ${ic.length} item(s) ?\nRemplace toutes tes données actuelles.`))return;collection=ic;saveMerch();renderCollection();toast(`✓ ${ic.length} item(s) importé(s) !`);}catch(err){toast('⚠️ Erreur lecture fichier','#f87171');}input.value=''};
+  reader.readAsText(file);
+}
+function exportMerchCSV() {
+  let csv='\uFEFFSérie;Item;Type;Plateforme;Statut;Date;Quantité;Valeur;Notes\n';
+  collection.forEach(item=>{csv+=`"${(item.serie||'').replace(/"/g,'""')}";"${(item.titre||'').replace(/"/g,'""')}";"${item.type}";"${(item.plateforme||'').replace(/"/g,'""')}";"${item.statut}";"${item.date||''}";"${item.quantite}";"${item.valeur||0}";"${(item.notes||'').replace(/"/g,'""')}"\n`;});
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='bl_merch_collection.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);toast('✓ CSV merch exporté !');
+}
+function importMerchCSV(input) {
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const text=e.target.result.replace(/^\uFEFF/,'');
+      const lines=text.split(/\r?\n/).filter(l=>l.trim());
+      if(lines.length<2){toast('⚠️ CSV vide','#f87171');return;}
+      function parseLine(line){const fields=[];let cur='',inQ=false;for(let i=0;i<line.length;i++){const ch=line[i];if(inQ){if(ch==='"'&&line[i+1]==='"'){cur+='"';i++;}else if(ch==='"'){inQ=false;}else cur+=ch;}else{if(ch==='"'){inQ=true;}else if(ch===';'){fields.push(cur);cur='';}else cur+=ch;}}fields.push(cur);return fields;}
+      const headers=parseLine(lines[0]).map(h=>h.trim().toLowerCase());
+      const idx={serie:headers.indexOf('série'),titre:headers.indexOf('item'),type:headers.indexOf('type'),plateforme:headers.indexOf('plateforme'),statut:headers.indexOf('statut'),date:headers.indexOf('date'),quantite:headers.indexOf('quantité'),valeur:headers.indexOf('valeur'),notes:headers.indexOf('notes')};
+      if(idx.titre===-1){toast('⚠️ Colonne "Item" introuvable','#f87171');return;}
+      const imported=lines.slice(1).map(line=>{const f=parseLine(line);const get=(i)=>i>=0?(f[i]||'').trim():'';const titre=get(idx.titre);if(!titre)return null;const rawType=get(idx.type);const rawStatut=get(idx.statut);return{serie:get(idx.serie)||'—',titre,type:MERCH_TYPES.includes(rawType)?rawType:MERCH_TYPES[0],plateforme:get(idx.plateforme),statut:MERCH_STATUTS.includes(rawStatut)?rawStatut:MERCH_STATUTS[0],date:get(idx.date),quantite:parseInt(get(idx.quantite))||1,valeur:parseFloat(get(idx.valeur))||0,notes:get(idx.notes),photo:''};}).filter(Boolean);
+      if(!imported.length){toast('⚠️ Aucune ligne valide','#f87171');return;}
+      const replace=confirm(`${imported.length} item(s) trouvé(s).\n• OK → Remplacer\n• Annuler → Ajouter`);
+      collection=replace?imported:[...imported,...collection];
+      saveMerch();renderCollection();toast(`✓ ${imported.length} item(s) importé(s) !`,'#22d3ee55');
+    }catch(err){toast('⚠️ Erreur CSV','#f87171');console.error(err);}
+    input.value='';
+  };
+  reader.readAsText(file,'UTF-8');
+}
+
+// ══════════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════════
+loadAll();
+initMerchSelects();
+updatePaysFilter();
+renderCollabs();
+renderCollabPhotosGrid();
+renderCollabLinks();
+renderCollabSeriesTags();
+</script>
+
+
+<script>
+if ('serviceWorker' in navigator) {
+  const sw = `
+const CACHE='bl-hub-v2';
+self.addEventListener('install',e=>{self.skipWaiting();});
+self.addEventListener('activate',e=>{
+  e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));
+  self.clients.claim();
+});
+self.addEventListener('fetch',e=>{
+  if(e.request.method!=='GET')return;
+  const url=new URL(e.request.url);
+  if(url.origin!==self.location.origin)return;
+  e.respondWith(
+    caches.open(CACHE).then(cache=>
+      cache.match(e.request).then(cached=>{
+        const fresh=fetch(e.request).then(resp=>{
+          if(resp&&resp.status===200)cache.put(e.request,resp.clone());
+          return resp;
+        }).catch(()=>cached);
+        return cached||fresh;
+      })
+    )
+  );
+});
+  `;
+  const blob = new Blob([sw], {type:'application/javascript'});
+  const url = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(url);
+}
+</script>
+</body>
+</html>
